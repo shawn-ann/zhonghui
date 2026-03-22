@@ -2,6 +2,19 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const CaseStudyModel = require('../models/caseStudy');
+const { QuillDeltaToHtmlConverter } = require('quill-delta-to-html');
+
+// 将 Quill Delta 转换为 HTML
+function convertDeltaToHtml(deltaJson) {
+  try {
+    const delta = JSON.parse(deltaJson);
+    const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
+    return converter.convert();
+  } catch (error) {
+    // 如果不是有效的 Delta JSON，则原样返回
+    return deltaJson;
+  }
+}
 
 // Get all case studies with pagination
 router.get('/', async (req, res) => {
@@ -14,12 +27,13 @@ router.get('/', async (req, res) => {
       const pageNum = parseInt(page) || 1;
       const sizeNum = parseInt(pageSize) || 10;
       const offset = (pageNum - 1) * sizeNum;
-      [rows] = await pool.execute(
+      // 使用 query 而不是 execute，因为 execute 对 LIMIT/OFFSET 参数支持有问题
+      [rows] = await pool.query(
         'SELECT * FROM case_studies ORDER BY publish_date DESC LIMIT ? OFFSET ?',
         [sizeNum, offset]
       );
     } else {
-      [rows] = await pool.execute('SELECT * FROM case_studies ORDER BY publish_date DESC');
+      [rows] = await pool.query('SELECT * FROM case_studies ORDER BY publish_date DESC');
     }
     
     console.log('Query result:', rows.length, 'rows');
@@ -51,7 +65,9 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { title, content, image_url: imageUrl, publish_date: publishDate } = req.body;
-    const id = await CaseStudyModel.create(title, content, imageUrl, publishDate);
+    // 将 Quill Delta 转换为 HTML
+    const htmlContent = convertDeltaToHtml(content);
+    const id = await CaseStudyModel.create(title, htmlContent, imageUrl, publishDate);
     res.status(201).json({ id });
   } catch (error) {
     console.error('Error creating case study:', error);
@@ -64,7 +80,9 @@ router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, image_url: imageUrl, publish_date: publishDate } = req.body;
-    await CaseStudyModel.update(id, title, content, imageUrl, publishDate);
+    // 将 Quill Delta 转换为 HTML
+    const htmlContent = convertDeltaToHtml(content);
+    await CaseStudyModel.update(id, title, htmlContent, imageUrl, publishDate);
     res.json({ success: true });
   } catch (error) {
     console.error('Error updating case study:', error);

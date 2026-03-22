@@ -11,8 +11,8 @@ class CaseStudyModel {
     const pageNum = parseInt(page) || 1;
     const sizeNum = parseInt(pageSize) || 10;
     const offset = (pageNum - 1) * sizeNum;
-    // 使用参数化查询防止SQL注入
-    const [rows] = await pool.execute(
+    // 使用 query 而不是 execute，因为 execute 对 LIMIT/OFFSET 参数支持有问题
+    const [rows] = await pool.query(
       'SELECT * FROM case_studies ORDER BY publish_date DESC LIMIT ? OFFSET ?',
       [sizeNum, offset]
     );

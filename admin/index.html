@@ -5,32 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>管理后台</title>
   <link rel="stylesheet" href="css/index.css">
-  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-  <script>
-    // 等待 DOM 加载完成后初始化 CKEditor
-    window.addEventListener('DOMContentLoaded', function() {
-      ClassicEditor
-        .create( document.querySelector( '#editor' ), {
-          toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'insertTable', '|', 'undo', 'redo' ],
-          image: {
-            upload: {
-              types: [ 'jpeg', 'png', 'gif', 'webp' ],
-              allowMultipleFiles: false
-            }
-          }
-        } )
-        .then( editor => {
-          console.log( 'Editor was initialized', editor );
-          editorInstance = editor;
-          editor.model.document.on( 'change:data', () => {
-            document.getElementById('content').value = editor.getData();
-          } );
-        } )
-        .catch( error => {
-          console.error( error );
-        } );
-    });
-  </script>
+  <!-- Quill.js CSS -->
+  <link href="node_modules/quill/dist/quill.snow.css" rel="stylesheet">
+  <!-- Quill.js -->
+  <script src="node_modules/quill/dist/quill.min.js"></script>
 </head>
 <body>
   <div class="admin-container">

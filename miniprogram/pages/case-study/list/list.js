@@ -23,10 +23,11 @@ Page({
   // 获取案例分享列表（带分页）
   fetchCaseStudies() {
     const { page, pageSize, caseStudies } = this.data;
-    
+
     this.setData({ loading: true });
-    
-    app.request(`/case-studies?page=${page}&pageSize=${pageSize}`)
+
+    // 使用小程序专用接口，返回HTML内容
+    app.wechatRequest(`/case-studies?page=${page}&pageSize=${pageSize}`)
       .then(res => {
         // 格式化数据
         const formattedCaseStudies = res.map(item => {

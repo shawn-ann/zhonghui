@@ -45,6 +45,11 @@ const qaArticleRouter = require('./api/qaArticle');
 const contactSubmissionRouter = require('./api/contactSubmission');
 const adminRouter = require('./api/admin');
 
+// 小程序专用接口（返回HTML内容）- 放在API路由之前
+const wechatCaseStudyRouter = require('./wechat/caseStudy');
+app.use('/wechat/case-studies', wechatCaseStudyRouter);
+
+// API routes
 app.use('/api/carousel', carouselRouter);
 app.use('/api/case-studies', caseStudyRouter);
 app.use('/api/qa-articles', qaArticleRouter);

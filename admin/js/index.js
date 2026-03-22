@@ -14,15 +14,103 @@ window.addEventListener('DOMContentLoaded', () => {
 function initializeAdmin() {
   // 初始化导航
   setupNavigation();
-  
+
   // 初始化模态框
   setupModal();
-  
+
   // 初始化事件监听器
   setupEventListeners();
-  
+
+  // 初始化 Quill 编辑器
+  initializeQuillEditor();
+
   // 加载轮播图片数据
   loadCarouselImages();
+}
+
+// 初始化 Quill 编辑器
+function initializeQuillEditor() {
+  const editorContainer = document.getElementById('editor');
+  if (!editorContainer) return;
+
+  editorInstance = new Quill('#editor', {
+    theme: 'snow',
+    placeholder: '请输入内容...',
+    modules: {
+      toolbar: {
+        container: [
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          [{ 'size': ['small', false, 'large', 'huge'] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'indent': '-1'}, { 'indent': '+1' }],
+          [{ 'align': [] }],
+          ['link', 'image'],
+          ['clean']
+        ],
+        handlers: {
+          'image': function() {
+            selectLocalImage();
+          }
+        }
+      }
+    }
+  });
+
+  // 监听内容变化，同步到隐藏字段
+  editorInstance.on('text-change', function() {
+    const content = document.getElementById('content');
+    if (content) {
+      content.value = JSON.stringify(editorInstance.getContents());
+    }
+  });
+}
+
+// 选择本地图片并上传
+function selectLocalImage() {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'image/*');
+  input.click();
+
+  input.onchange = async function() {
+    const file = input.files[0];
+    if (file) {
+      try {
+        const imageUrl = await uploadImage(file);
+        insertImageToEditor(imageUrl);
+      } catch (error) {
+        console.error('图片上传失败:', error);
+        alert('图片上传失败，请重试');
+      }
+    }
+  };
+}
+
+// 上传图片到服务器
+async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${apiBaseUrl}/upload`, {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error('上传失败');
+  }
+
+  const result = await response.json();
+  return result.url;
+}
+
+// 插入图片到编辑器
+function insertImageToEditor(imageUrl) {
+  const range = editorInstance.getSelection();
+  const index = range ? range.index : editorInstance.getLength();
+  editorInstance.insertEmbed(index, 'image', `http://localhost:3000${imageUrl}`);
 }
 
 // 设置导航
@@ -76,12 +164,7 @@ function setupModal() {
     modal.classList.remove('show');
   });
   
-  // 点击模态框外部关闭
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.classList.remove('show');
-    }
-  });
+  // 移除点击模态框外部关闭的功能，防止编辑内容丢失
   
   // 模态框表单提交
   document.getElementById('modal-form').addEventListener('submit', async (e) => {
@@ -232,18 +315,23 @@ function openModal(title, type, item = null) {
     // 设置富文本编辑器内容
     if (item.content) {
       if (editorInstance) {
-        editorInstance.setData(item.content);
+        try {
+          // 尝试解析为 Quill Delta 格式
+          const delta = JSON.parse(item.content);
+          editorInstance.setContents(delta);
+        } catch (e) {
+          // 如果不是 JSON 格式，则作为 HTML 文本设置
+          editorInstance.setText(item.content);
+        }
       }
       document.getElementById('content').value = item.content;
     } else {
       if (editorInstance) {
-        editorInstance.setData('');
+        editorInstance.setContents([]);
       }
       document.getElementById('content').value = '';
     }
-    
 
-    
     // 显示图片预览
     const imagePreview = document.getElementById('image-preview');
     if (item.image_url) {
@@ -256,10 +344,10 @@ function openModal(title, type, item = null) {
     document.getElementById('title').value = '';
     document.getElementById('order-num').value = '0';
     if (editorInstance) {
-      editorInstance.setData('');
+      editorInstance.setContents([]);
     }
     document.getElementById('content').value = '';
-    
+
     // 清空图片预览
     document.getElementById('image-preview').innerHTML = '';
   }
