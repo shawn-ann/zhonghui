@@ -22,11 +22,6 @@
     </view>
   </view>
 
-  <!-- 直播提示 -->
-  <view class="live-container">
-    <image src="/images/live-icon.png" class="live-icon" />
-    <text class="live-text">直播：我的美国互惠生到小学老师蜕变记</text>
-  </view>
 
   <!-- 案例分享列表 -->
   <view class="case-studies-container">
@@ -38,11 +33,16 @@
         <view class="case-study-meta">
           <text class="case-study-date">{{item.publish_date}}</text>
           <view class="case-study-stats">
-            <text class="case-study-view">{{item.view_count}} 浏览</text>
-            <text class="case-study-like">0 点赞</text>
+            <view class="case-study-view">
+              <image src="/images/icon/yanjing_1.png" class="view-icon" />
+              <text>{{item.view_count}}</text>
+            </view>
           </view>
         </view>
       </view>
+    </view>
+    <view class="load-more-container">
+      <button class="load-more-button" bindtap="navigateToCaseStudyList">加载更多</button>
     </view>
   </view>
 </view>

@@ -6,6 +6,19 @@ class CaseStudyModel {
     return rows;
   }
 
+  static async getPaginated(page = 1, pageSize = 10) {
+    // 确保参数是数字类型
+    const pageNum = parseInt(page) || 1;
+    const sizeNum = parseInt(pageSize) || 10;
+    const offset = (pageNum - 1) * sizeNum;
+    // 使用参数化查询防止SQL注入
+    const [rows] = await pool.execute(
+      'SELECT * FROM case_studies ORDER BY publish_date DESC LIMIT ? OFFSET ?',
+      [sizeNum, offset]
+    );
+    return rows;
+  }
+
   static async getById(id) {
     const [rows] = await pool.execute('SELECT * FROM case_studies WHERE id = ?', [id]);
     return rows[0];

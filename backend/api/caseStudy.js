@@ -1,14 +1,33 @@
 const express = require('express');
 const router = express.Router();
+const pool = require('../config/db');
 const CaseStudyModel = require('../models/caseStudy');
 
-// Get all case studies
+// Get all case studies with pagination
 router.get('/', async (req, res) => {
   try {
-    const caseStudies = await CaseStudyModel.getAll();
-    res.json(caseStudies);
+    console.log('Request query:', req.query);
+    const { page, pageSize } = req.query;
+    
+    let rows;
+    if (page && pageSize) {
+      const pageNum = parseInt(page) || 1;
+      const sizeNum = parseInt(pageSize) || 10;
+      const offset = (pageNum - 1) * sizeNum;
+      [rows] = await pool.execute(
+        'SELECT * FROM case_studies ORDER BY publish_date DESC LIMIT ? OFFSET ?',
+        [sizeNum, offset]
+      );
+    } else {
+      [rows] = await pool.execute('SELECT * FROM case_studies ORDER BY publish_date DESC');
+    }
+    
+    console.log('Query result:', rows.length, 'rows');
+    
+    res.json(rows);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get case studies' });
+    console.error('Error getting case studies:', error);
+    res.status(500).json({ error: 'Failed to get case studies', details: error.message });
   }
 });
 

@@ -3,7 +3,8 @@
     "pages/home/home",
     "pages/qa/qa",
     "pages/qa/detail/detail",
-    "pages/contact/contact"
+    "pages/contact/contact",
+    "pages/case-study/list/list"
   ],
   "window": {
     "backgroundTextStyle": "light",

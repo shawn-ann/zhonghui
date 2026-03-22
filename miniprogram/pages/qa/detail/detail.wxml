@@ -2,14 +2,19 @@
 <view class="container">
   <view class="article-header">
     <text class="article-title">{{article.title}}</text>
-    <view class="article-meta">
-      <text class="article-date">{{article.publish_date}}</text>
-      <text class="article-view">{{article.view_count}} 浏览</text>
-    </view>
+    <text class="article-date">{{article.publish_date}}</text>
   </view>
   
   <view class="article-content">
-    <image src="{{article.image_url}}" class="article-image" />
     <rich-text nodes="{{article.content}}"></rich-text>
+    
+    <view class="article-footer">
+      <view class="article-stats">
+        <view class="view-count">
+          <image src="/images/icon/yanjing_1.png" class="view-icon" />
+          <text>{{article.view_count}}</text>
+        </view>
+      </view>
+    </view>
   </view>
 </view>

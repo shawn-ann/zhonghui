@@ -1,0 +1,30 @@
+<!-- list.wxml -->
+<view class="container">
+  
+  <!-- 案例分享列表 -->
+  <view class="case-list">
+    <view class="case-item" wx:for="{{caseStudies}}" wx:key="id" bindtap="navigateToDetail" data-id="{{item.id}}">
+      <view class="case-content">
+        <text class="case-title">{{item.title}}</text>
+        <view class="case-meta">
+          <text class="case-date">{{item.publish_date}}</text>
+          <view class="case-view">
+            <image src="/images/icon/yanjing_1.png" class="view-icon" />
+            <text>{{item.view_count}}</text>
+          </view>
+        </view>
+      </view>
+      <image src="{{item.image_url}}" class="case-image" />
+    </view>
+  </view>
+  
+  <!-- 加载中提示 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <text class="loading-text">加载中...</text>
+  </view>
+  
+  <!-- 没有更多数据提示 -->
+  <view wx:if="{{!loading && !hasMore}}" class="no-more-container">
+    <text class="no-more-text">没有更多数据了</text>
+  </view>
+</view>

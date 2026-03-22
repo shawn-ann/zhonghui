@@ -57,7 +57,8 @@ Page({
 
   // 获取案例分享
   fetchCaseStudies() {
-    app.request('/case-studies')
+    // 添加分页参数，默认获取前10条
+    app.request('/case-studies?page=1&pageSize=10')
       .then(res => {
         // 将相对路径转换为完整的 URL，并格式化日期
         const caseStudies = res.map(item => {
@@ -115,6 +116,13 @@ Page({
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
       url: `/pages/qa/detail/detail?id=${id}&type=case`
+    });
+  },
+
+  // 导航到案例分享列表
+  navigateToCaseStudyList() {
+    wx.navigateTo({
+      url: '/pages/case-study/list/list'
     });
   }
 })
