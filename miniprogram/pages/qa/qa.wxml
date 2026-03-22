@@ -1,0 +1,15 @@
+<!-- qa.wxml -->
+<view class="container">
+  <view class="qa-list">
+    <view class="qa-item" wx:for="{{qaArticles}}" wx:key="id" bindtap="navigateToDetail" data-id="{{item.id}}">
+      <image src="{{item.image_url}}" class="qa-image" />
+      <view class="qa-content">
+        <text class="qa-title">{{item.title}}</text>
+        <view class="qa-meta">
+          <text class="qa-date">{{item.publish_date}}</text>
+          <text class="qa-view">{{item.view_count}} 浏览</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

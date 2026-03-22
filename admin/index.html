@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理后台</title>
+  <link rel="stylesheet" href="css/index.css">
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+  <script>
+    // 等待 DOM 加载完成后初始化 CKEditor
+    window.addEventListener('DOMContentLoaded', function() {
+      ClassicEditor
+        .create( document.querySelector( '#editor' ), {
+          toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'insertTable', '|', 'undo', 'redo' ],
+          image: {
+            upload: {
+              types: [ 'jpeg', 'png', 'gif', 'webp' ],
+              allowMultipleFiles: false
+            }
+          }
+        } )
+        .then( editor => {
+          console.log( 'Editor was initialized', editor );
+          editorInstance = editor;
+          editor.model.document.on( 'change:data', () => {
+            document.getElementById('content').value = editor.getData();
+          } );
+        } )
+        .catch( error => {
+          console.error( error );
+        } );
+    });
+  </script>
+</head>
+<body>
+  <div class="admin-container">
+    <header class="admin-header">
+      <h1>管理后台</h1>
+      <div class="header-actions">
+        <button id="logout-button" class="logout-button">退出登录</button>
+      </div>
+    </header>
+    
+    <nav class="admin-nav">
+      <ul>
+        <li><a href="#carousel" class="nav-link active" data-section="carousel">轮播图片管理</a></li>
+        <li><a href="#case-studies" class="nav-link" data-section="case-studies">案例分享管理</a></li>
+        <li><a href="#qa-articles" class="nav-link" data-section="qa-articles">问答文章管理</a></li>
+        <li><a href="#contact-submissions" class="nav-link" data-section="contact-submissions">联系表单管理</a></li>
+      </ul>
+    </nav>
+    
+    <main class="admin-content">
+      <section id="carousel-section" class="section active">
+        <h2>轮播图片管理</h2>
+        <div class="section-content">
+          <button id="add-carousel" class="add-button">添加轮播图片</button>
+          <div id="carousel-list" class="item-list"></div>
+        </div>
+      </section>
+      
+      <section id="case-studies-section" class="section">
+        <h2>案例分享管理</h2>
+        <div class="section-content">
+          <button id="add-case-study" class="add-button">添加案例分享</button>
+          <div id="case-studies-list" class="item-list"></div>
+        </div>
+      </section>
+      
+      <section id="qa-articles-section" class="section">
+        <h2>问答文章管理</h2>
+        <div class="section-content">
+          <button id="add-qa-article" class="add-button">添加问答文章</button>
+          <div id="qa-articles-list" class="item-list"></div>
+        </div>
+      </section>
+      
+      <section id="contact-submissions-section" class="section">
+        <h2>联系表单管理</h2>
+        <div class="section-content">
+          <div id="contact-submissions-list" class="item-list"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <!-- 模态框 -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">添加轮播图片</h3>
+        <button id="close-modal" class="close-button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="modal-form">
+          <div class="form-group">
+            <label for="image-upload">上传图片</label>
+            <input type="file" id="image-upload" name="image" accept="image/*">
+            <div id="image-preview" class="image-preview"></div>
+          </div>
+          <div class="form-group">
+            <label for="title">标题</label>
+            <input type="text" id="title" name="title">
+          </div>
+          <div class="form-group" id="order-num-group">
+            <label for="order-num">排序</label>
+            <input type="number" id="order-num" name="orderNum" value="0" min="0">
+          </div>
+          <div class="form-group">
+            <label for="content">内容</label>
+            <div id="editor"></div>
+            <input type="hidden" id="content" name="content">
+          </div>
+          <div class="form-group" id="publish-date-group" style="display: none;">
+            <label for="publish-date">发布日期</label>
+            <input type="date" id="publish-date" name="publishDate">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="save-button">保存</button>
+            <button type="button" id="cancel-button" class="cancel-button">取消</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!-- contact.wxml -->
+<view class="container">
+  <form bindsubmit="submitForm">
+    <!-- 姓名 -->
+    <view class="form-item">
+      <text class="form-label">姓名</text>
+      <input type="text" name="name" placeholder="请输入姓名" class="form-input" />
+    </view>
+
+    <!-- 生日 -->
+    <view class="form-item">
+      <text class="form-label">生日</text>
+      <picker mode="date" name="birthday" class="form-picker">
+        <view class="form-picker-view">请选择</view>
+      </picker>
+    </view>
+
+    <!-- 意向项目 -->
+    <view class="form-item">
+      <text class="form-label">意向项目</text>
+      <view class="checkbox-group">
+        <label class="checkbox-item" wx:for="{{intendedPrograms}}" wx:key="value">
+          <checkbox value="{{item.value}}" name="intendedPrograms" />
+          <text>{{item.label}}</text>
+        </label>
+      </view>
+    </view>
+
+    <!-- 最高学历 -->
+    <view class="form-item">
+      <text class="form-label">最高学历</text>
+      <view class="radio-group">
+        <label class="radio-item" wx:for="{{educationLevels}}" wx:key="value">
+          <radio value="{{item.value}}" name="highestEducation" />
+          <text>{{item.label}}</text>
+        </label>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="form-submit">
+      <button form-type="submit" class="submit-button">提交</button>
+    </view>
+  </form>
+</view>
