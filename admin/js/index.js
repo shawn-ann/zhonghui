@@ -173,11 +173,43 @@ function setupModal() {
     const form = e.target;
     const formData = new FormData(form);
     
+    // 清除之前的错误信息
+    document.getElementById('image-error').textContent = '';
+    document.getElementById('title-error').textContent = '';
+    document.getElementById('content-error').textContent = '';
+    
+    // 验证表单
+    let isValid = true;
+    
+    // 验证标题
+    const title = formData.get('title');
+    if (!title || title.trim() === '') {
+      document.getElementById('title-error').textContent = '标题不能为空';
+      isValid = false;
+    }
+    
+    // 验证内容
+    const content = formData.get('content');
+    if (!content || content.trim() === '') {
+      document.getElementById('content-error').textContent = '内容不能为空';
+      isValid = false;
+    }
+    
+    // 验证图片（新建时必填，编辑时可选）
+    const fileInput = document.getElementById('image-upload');
+    if (!window.currentItemId && fileInput.files.length === 0) {
+      document.getElementById('image-error').textContent = '图片不能为空';
+      isValid = false;
+    }
+    
+    if (!isValid) {
+      return;
+    }
+    
     try {
       let data = {};
       
       // 处理文件上传
-      const fileInput = document.getElementById('image-upload');
       if (fileInput.files.length > 0) {
         // 上传文件
         const uploadFormData = new FormData();
@@ -203,13 +235,13 @@ function setupModal() {
       // 根据类型处理不同的字段
       if (window.currentItemType === 'carousel') {
         // 轮播图字段
-        data.title = formData.get('title');
+        data.title = title;
         data.order_num = formData.get('orderNum');
-        data.content = formData.get('content');
+        data.content = content;
       } else if (window.currentItemType === 'case-studies' || window.currentItemType === 'qa-articles') {
         // 案例分享和问答文章字段
-        data.title = formData.get('title');
-        data.content = formData.get('content');
+        data.title = title;
+        data.content = content;
       }
       
       let response;
@@ -241,7 +273,7 @@ function setupModal() {
             loadCarouselImages();
             break;
           case 'case-studies':
-            loadCaseStudies();
+            loadCaseStudies(caseStudiesPage);
             break;
           case 'qa-articles':
             loadQAArticles();
@@ -291,6 +323,11 @@ function openModal(title, type, item = null) {
   // 重置表单
   const form = document.getElementById('modal-form');
   form.reset();
+  
+  // 清空错误信息
+  document.getElementById('image-error').textContent = '';
+  document.getElementById('title-error').textContent = '';
+  document.getElementById('content-error').textContent = '';
   
   // 根据类型显示或隐藏不同的字段
   const orderNumGroup = document.getElementById('order-num-group');
@@ -391,21 +428,136 @@ async function loadCarouselImages() {
   }
 }
 
+// 案例分享分页状态
+let caseStudiesPage = 1;
+const caseStudiesPageSize = 10;
+
 // 加载案例分享
-async function loadCaseStudies() {
+async function loadCaseStudies(page = 1) {
   try {
-    const response = await fetch(`${apiBaseUrl}/case-studies`);
-    const caseStudies = await response.json();
+    const response = await fetch(`${apiBaseUrl}/case-studies?page=${page}&pageSize=${caseStudiesPageSize}`);
+    const result = await response.json();
+    const caseStudies = result.data || [];
+    const totalCount = result.total || 0;
     
-    const caseStudiesList = document.getElementById('case-studies-list');
-    caseStudiesList.innerHTML = '';
+    const caseStudiesBody = document.getElementById('case-studies-body');
+    caseStudiesBody.innerHTML = '';
     
-    caseStudies.forEach(caseStudy => {
-      const card = createItemCard(caseStudy, 'case-studies');
-      caseStudiesList.appendChild(card);
-    });
+    if (caseStudies.length === 0) {
+      caseStudiesBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">暂无数据</td></tr>';
+    } else {
+      caseStudies.forEach(caseStudy => {
+        // 格式化日期
+        const formattedDate = caseStudy.publish_date ? new Date(caseStudy.publish_date).toLocaleString('zh-CN') : '';
+        // 创建编辑按钮
+        const editButton = document.createElement('button');
+        editButton.className = 'edit-button';
+        editButton.textContent = '编辑';
+        editButton.onclick = () => openModal('编辑案例分享', 'case-studies', caseStudy);
+        
+        // 创建删除按钮
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-button';
+        deleteButton.textContent = '删除';
+        deleteButton.onclick = () => deleteItem(caseStudy.id, 'case-studies');
+        
+        // 创建操作按钮容器
+        const actionContainer = document.createElement('td');
+        actionContainer.className = 'action-buttons';
+        actionContainer.appendChild(editButton);
+        actionContainer.appendChild(deleteButton);
+        
+        // 创建行
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${caseStudy.id}</td>
+          <td>${caseStudy.title}</td>
+          <td>${formattedDate}</td>
+          <td>${caseStudy.view_count || 0}</td>
+        `;
+        row.appendChild(actionContainer);
+        caseStudiesBody.appendChild(row);
+      });
+    }
+    
+    // 生成分页
+    const totalPages = Math.ceil(totalCount / caseStudiesPageSize);
+    generatePagination('case-studies-pagination', page, totalPages);
+    caseStudiesPage = page;
   } catch (error) {
     console.error('Error loading case studies:', error);
+  }
+}
+
+// 生成分页
+function generatePagination(containerId, currentPage, totalPages) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  
+  // 上一页按钮
+  const prevButton = document.createElement('button');
+  prevButton.textContent = '上一页';
+  prevButton.disabled = currentPage === 1;
+  prevButton.onclick = () => {
+    if (currentPage > 1) {
+      if (containerId === 'case-studies-pagination') {
+        loadCaseStudies(currentPage - 1);
+      }
+    }
+  };
+  container.appendChild(prevButton);
+  
+  // 页码按钮
+  for (let i = 1; i <= totalPages; i++) {
+    const pageButton = document.createElement('button');
+    pageButton.textContent = i;
+    pageButton.className = currentPage === i ? 'active' : '';
+    pageButton.onclick = () => {
+      if (containerId === 'case-studies-pagination') {
+        loadCaseStudies(i);
+      }
+    };
+    container.appendChild(pageButton);
+  }
+  
+  // 下一页按钮
+  const nextButton = document.createElement('button');
+  nextButton.textContent = '下一页';
+  nextButton.disabled = currentPage === totalPages;
+  nextButton.onclick = () => {
+    if (currentPage < totalPages) {
+      if (containerId === 'case-studies-pagination') {
+        loadCaseStudies(currentPage + 1);
+      }
+    }
+  };
+  container.appendChild(nextButton);
+}
+
+// 删除项目
+async function deleteItem(id, type) {
+  if (confirm('确定要删除吗？')) {
+    try {
+      const response = await fetch(`${apiBaseUrl}/${type}/${id}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        // 重新加载数据
+        if (type === 'case-studies') {
+          loadCaseStudies(caseStudiesPage);
+        } else if (type === 'qa-articles') {
+          loadQAArticles();
+        } else if (type === 'carousel') {
+          loadCarouselImages();
+        }
+      } else {
+        alert('删除失败，请重试');
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      alert('删除失败，请重试');
+    }
   }
 }
 

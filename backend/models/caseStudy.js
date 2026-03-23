@@ -27,19 +27,26 @@ class CaseStudyModel {
   static async create(title, content, imageUrl, publishDate) {
     // 如果没有提供发布日期，使用当前日期和时间
     const currentDate = publishDate || new Date();
+    // 确保参数不是 undefined
+    const safeTitle = title || null;
+    const safeContent = content || null;
+    const safeImageUrl = imageUrl || null;
     const [result] = await pool.execute(
       'INSERT INTO case_studies (title, content, image_url, publish_date) VALUES (?, ?, ?, ?)',
-      [title, content, imageUrl, currentDate]
+      [safeTitle, safeContent, safeImageUrl, currentDate]
     );
     return result.insertId;
   }
 
-  static async update(id, title, content, imageUrl, publishDate) {
-    // 如果没有提供发布日期，使用当前日期和时间
-    const currentDate = publishDate || new Date();
+  static async update(id, title, content, imageUrl) {
+    // 只更新必要字段，不更新发布日期
+    // 确保参数不是 undefined
+    const safeTitle = title || null;
+    const safeContent = content || null;
+    const safeImageUrl = imageUrl || null;
     await pool.execute(
-      'UPDATE case_studies SET title = ?, content = ?, image_url = ?, publish_date = ? WHERE id = ?',
-      [title, content, imageUrl, currentDate, id]
+      'UPDATE case_studies SET title = ?, content = ?, image_url = ? WHERE id = ?',
+      [safeTitle, safeContent, safeImageUrl, id]
     );
   }
 

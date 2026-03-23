@@ -113,6 +113,83 @@ body {
   background-color: #1976D2;
 }
 
+/* 表格样式 */
+.table-container {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.data-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+.data-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.data-table td {
+  font-size: 14px;
+  color: #333;
+}
+
+.data-table .action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* 分页样式 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  margin: 0 4px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.pagination button:hover {
+  background-color: #f5f5f5;
+}
+
+.pagination button.active {
+  background-color: #1E88E5;
+  color: white;
+  border-color: #1E88E5;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .item-list {
   display: flex;
   flex-direction: column;
@@ -264,6 +341,18 @@ body {
   font-size: 14px;
   color: #333333;
   margin-bottom: 5px;
+}
+
+.required {
+  color: #F44336;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #F44336;
+  font-size: 12px;
+  margin-top: 5px;
+  min-height: 16px;
 }
 
 .form-group input,

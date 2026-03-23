@@ -23,6 +23,12 @@ router.get('/', async (req, res) => {
     const { page, pageSize } = req.query;
     
     let rows;
+    let totalCount = 0;
+    
+    // 获取总记录数
+    const [countResult] = await pool.query('SELECT COUNT(*) as total FROM case_studies');
+    totalCount = countResult[0].total;
+    
     if (page && pageSize) {
       const pageNum = parseInt(page) || 1;
       const sizeNum = parseInt(pageSize) || 10;
@@ -36,9 +42,12 @@ router.get('/', async (req, res) => {
       [rows] = await pool.query('SELECT * FROM case_studies ORDER BY publish_date DESC');
     }
     
-    console.log('Query result:', rows.length, 'rows');
+    console.log('Query result:', rows.length, 'rows, total:', totalCount);
     
-    res.json(rows);
+    res.json({ 
+      data: rows, 
+      total: totalCount 
+    });
   } catch (error) {
     console.error('Error getting case studies:', error);
     res.status(500).json({ error: 'Failed to get case studies', details: error.message });
@@ -78,9 +87,9 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content, image_url: imageUrl, publish_date: publishDate } = req.body;
+    const { title, content, image_url: imageUrl } = req.body;
     // 直接保存 JSON 格式，不转换
-    await CaseStudyModel.update(id, title, content, imageUrl, publishDate);
+    await CaseStudyModel.update(id, title, content, imageUrl);
     res.json({ success: true });
   } catch (error) {
     console.error('Error updating case study:', error);
