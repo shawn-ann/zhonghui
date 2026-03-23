@@ -1,0 +1,27 @@
+<!-- detail.wxml -->
+<view class="container">
+  
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <text class="loading-text">加载中...</text>
+  </view>
+  
+  <!-- 案例详情 -->
+  <view wx:else class="case-detail">
+    <text class="case-title">{{caseStudy.title}}</text>
+    <text class="case-date">{{caseStudy.publish_date}}</text>
+    
+    <view class="case-content">
+      <mp-html content="{{caseStudy.content}}" img-mode="aspectFit"></mp-html>
+      
+      <view class="case-footer">
+        <view class="case-stats">
+          <view class="view-count">
+            <image src="/images/icon/yanjing_1.png" class="view-icon" />
+            <text>{{caseStudy.view_count}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

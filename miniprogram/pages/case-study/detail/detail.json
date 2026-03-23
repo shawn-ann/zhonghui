@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "案例详情",
+  "usingComponents": {
+    "mp-html": "/components/mp-html/dist/mp-weixin/index"
+  }
+}

@@ -65,9 +65,8 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { title, content, image_url: imageUrl, publish_date: publishDate } = req.body;
-    // 将 Quill Delta 转换为 HTML
-    const htmlContent = convertDeltaToHtml(content);
-    const id = await CaseStudyModel.create(title, htmlContent, imageUrl, publishDate);
+    // 直接保存 JSON 格式，不转换
+    const id = await CaseStudyModel.create(title, content, imageUrl, publishDate);
     res.status(201).json({ id });
   } catch (error) {
     console.error('Error creating case study:', error);
@@ -80,9 +79,8 @@ router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, image_url: imageUrl, publish_date: publishDate } = req.body;
-    // 将 Quill Delta 转换为 HTML
-    const htmlContent = convertDeltaToHtml(content);
-    await CaseStudyModel.update(id, title, htmlContent, imageUrl, publishDate);
+    // 直接保存 JSON 格式，不转换
+    await CaseStudyModel.update(id, title, content, imageUrl, publishDate);
     res.json({ success: true });
   } catch (error) {
     console.error('Error updating case study:', error);

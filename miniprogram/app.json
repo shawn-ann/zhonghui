@@ -4,7 +4,8 @@
     "pages/qa/qa",
     "pages/qa/detail/detail",
     "pages/contact/contact",
-    "pages/case-study/list/list"
+    "pages/case-study/list/list",
+    "pages/case-study/detail/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",

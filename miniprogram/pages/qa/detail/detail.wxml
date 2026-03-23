@@ -6,7 +6,7 @@
   </view>
   
   <view class="article-content">
-    <rich-text nodes="{{article.content}}"></rich-text>
+    <mp-html content="{{article.content}}" img-mode="aspectFit"></mp-html>
     
     <view class="article-footer">
       <view class="article-stats">

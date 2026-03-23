@@ -65,7 +65,7 @@ Page({
   navigateToDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/qa/detail/detail?id=${id}&type=case`
+      url: `/pages/case-study/detail/detail?id=${id}`
     });
   }
 })
