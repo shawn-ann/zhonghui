@@ -121,13 +121,18 @@ body {
   align-items: center;
 }
 
-.search-bar input {
+.search-bar input,
+.search-bar select {
   flex: 1;
-  max-width: 300px;
+  max-width: 200px;
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+}
+
+.search-bar select {
+  max-width: 150px;
 }
 
 .search-bar input:focus {
@@ -202,8 +207,16 @@ body {
 }
 
 .data-table .action-buttons {
-  display: flex;
-  gap: 8px;
+  /* 移除flex布局，使用默认的块级布局 */
+}
+
+.data-table .action-buttons button {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.data-table .action-buttons button:last-child {
+  margin-right: 0;
 }
 
 /* 分页样式 */

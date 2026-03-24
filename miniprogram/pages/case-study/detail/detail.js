@@ -15,7 +15,7 @@ Page({
   },
 
   loadCaseStudyDetail: function (id) {
-    const endpoint = `/case-studies/${id}`;
+    const endpoint = `/articles/${id}`;
     
     app.wechatRequest(endpoint)
       .then(res => {

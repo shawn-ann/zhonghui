@@ -44,10 +44,11 @@ const caseStudyRouter = require('./api/caseStudy');
 const qaArticleRouter = require('./api/qaArticle');
 const contactSubmissionRouter = require('./api/contactSubmission');
 const adminRouter = require('./api/admin');
+const articlesRouter = require('./api/articles');
 
 // 小程序专用接口（返回HTML内容）- 放在API路由之前
-const wechatCaseStudyRouter = require('./wechat/caseStudy');
-app.use('/wechat/case-studies', wechatCaseStudyRouter);
+const wechatArticleRouter = require('./wechat/article');
+app.use('/wechat/articles', wechatArticleRouter);
 
 // API routes
 app.use('/api/carousel', carouselRouter);
@@ -55,6 +56,7 @@ app.use('/api/case-studies', caseStudyRouter);
 app.use('/api/qa-articles', qaArticleRouter);
 app.use('/api/contact', contactSubmissionRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/articles', articlesRouter);
 
 // File upload endpoint
 app.post('/api/upload', upload.single('file'), (req, res) => {

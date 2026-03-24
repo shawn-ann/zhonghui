@@ -12,10 +12,29 @@ Page({
 
   // 获取问答文章
   fetchQAArticles() {
-    app.request('/qa-articles')
+    // 使用小程序专用接口，返回HTML内容，并指定文章类型为QA
+    app.wechatRequest('/articles?page=1&pageSize=20&articleType=qa')
       .then(res => {
+        // 处理返回的数据结构
+        const qaData = Array.isArray(res) ? res : [];
+        // 格式化数据
+        const formattedQAArticles = qaData.map(item => {
+          // 格式化日期
+          let formattedDate = '';
+          if (item.publish_date) {
+            const date = new Date(item.publish_date);
+            formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+          }
+          
+          return {
+            ...item,
+            image_url: item.image_url ? app.globalData.apiBaseUrl.replace('/api', '') + item.image_url : '',
+            publish_date: formattedDate
+          };
+        });
+        
         this.setData({
-          qaArticles: res
+          qaArticles: formattedQAArticles
         });
       })
       .catch(err => {

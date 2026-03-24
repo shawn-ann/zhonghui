@@ -136,11 +136,8 @@ function setupNavigation() {
         case 'carousel':
           loadCarouselImages();
           break;
-        case 'case-studies':
-          loadCaseStudies();
-          break;
-        case 'qa-articles':
-          loadQAArticles();
+        case 'articles':
+          loadArticles();
           break;
         case 'contact-submissions':
           loadContactSubmissions();
@@ -238,16 +235,34 @@ function setupModal() {
         data.title = title;
         data.order_num = formData.get('orderNum');
         data.content = content;
-      } else if (window.currentItemType === 'case-studies' || window.currentItemType === 'qa-articles') {
-        // 案例分享和问答文章字段
+      } else if (window.currentItemType === 'articles') {
+        // 文章字段
         data.title = title;
         data.content = content;
+        // 从表单获取文章类型
+        const articleType = formData.get('articleType');
+        if (articleType) {
+          data.article_type = articleType;
+        } else if (window.currentItem) {
+          // 编辑模式下使用现有类型
+          data.article_type = window.currentItem.article_type;
+        }
       }
       
       let response;
+      let apiEndpoint;
+      
+      if (window.currentItemType === 'articles') {
+        // 使用统一的 articles 接口
+        apiEndpoint = 'articles';
+      } else {
+        // 其他类型使用原有接口
+        apiEndpoint = window.currentItemType;
+      }
+      
       if (window.currentItemId) {
         // 更新现有项目
-        response = await fetch(`${apiBaseUrl}/${window.currentItemType}/${window.currentItemId}`, {
+        response = await fetch(`${apiBaseUrl}/${apiEndpoint}/${window.currentItemId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -256,7 +271,7 @@ function setupModal() {
         });
       } else {
         // 创建新项目
-        response = await fetch(`${apiBaseUrl}/${window.currentItemType}`, {
+        response = await fetch(`${apiBaseUrl}/${apiEndpoint}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -277,6 +292,9 @@ function setupModal() {
             break;
           case 'qa-articles':
             loadQAArticles();
+            break;
+          case 'articles':
+            loadArticles(articlesPage, articlesKeyword, articlesType);
             break;
         }
       } else {
@@ -302,36 +320,39 @@ function setupEventListeners() {
     openModal('添加轮播图片', 'carousel');
   });
 
-  // 添加案例分享
-  document.getElementById('add-case-study').addEventListener('click', () => {
-    openModal('添加案例分享', 'case-studies');
-  });
-
-  // 案例分享搜索
-  const searchBtn = document.getElementById('case-study-search-btn');
-  const resetBtn = document.getElementById('case-study-reset-btn');
-  const searchInput = document.getElementById('case-study-search');
-
-  if (searchBtn) {
-    searchBtn.addEventListener('click', searchCaseStudies);
+  // 添加文章
+  const addArticleBtn = document.getElementById('add-article');
+  if (addArticleBtn) {
+    addArticleBtn.addEventListener('click', () => {
+      openModal('添加文章', 'articles');
+    });
   }
 
-  if (resetBtn) {
-    resetBtn.addEventListener('click', resetCaseStudiesSearch);
+  // 文章搜索
+  const articleSearchBtn = document.getElementById('article-search-btn');
+  const articleResetBtn = document.getElementById('article-reset-btn');
+  const articleSearchInput = document.getElementById('article-search');
+  const articleTypeFilter = document.getElementById('article-type-filter');
+
+  if (articleSearchBtn) {
+    articleSearchBtn.addEventListener('click', searchArticles);
   }
 
-  if (searchInput) {
-    searchInput.addEventListener('keypress', (e) => {
+  if (articleResetBtn) {
+    articleResetBtn.addEventListener('click', resetArticlesSearch);
+  }
+
+  if (articleSearchInput) {
+    articleSearchInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
-        searchCaseStudies();
+        searchArticles();
       }
     });
   }
 
-  // 添加问答文章
-  document.getElementById('add-qa-article').addEventListener('click', () => {
-    openModal('添加问答文章', 'qa-articles');
-  });
+  if (articleTypeFilter) {
+    articleTypeFilter.addEventListener('change', searchArticles);
+  }
 }
 
 // 打开模态框
@@ -352,13 +373,16 @@ function openModal(title, type, item = null) {
   
   // 根据类型显示或隐藏不同的字段
   const orderNumGroup = document.getElementById('order-num-group');
+  const articleTypeGroup = document.getElementById('article-type-group');
   
   if (type === 'carousel') {
     // 轮播图显示排序字段
     orderNumGroup.style.display = 'block';
-  } else if (type === 'case-studies' || type === 'qa-articles') {
-    // 案例分享和问答文章隐藏排序字段
+    articleTypeGroup.style.display = 'none';
+  } else if (type === 'articles') {
+    // 文章隐藏排序字段，显示文章类型字段
     orderNumGroup.style.display = 'none';
+    articleTypeGroup.style.display = 'block';
   }
   
   // 填充表单数据（如果是编辑）
@@ -368,6 +392,9 @@ function openModal(title, type, item = null) {
     // 只有轮播图需要排序字段
     if (type === 'carousel') {
       document.getElementById('order-num').value = item.order_num || 0;
+    } else if (type === 'articles' && item.article_type) {
+      // 文章需要设置文章类型
+      document.getElementById('article-type').value = item.article_type;
     }
     
     // 设置富文本编辑器内容
@@ -401,6 +428,10 @@ function openModal(title, type, item = null) {
     // 清空表单数据
     document.getElementById('title').value = '';
     document.getElementById('order-num').value = '0';
+    if (type === 'articles') {
+      // 新建文章时默认选择案例分享
+      document.getElementById('article-type').value = 'case';
+    }
     if (editorInstance) {
       editorInstance.setContents([]);
     }
@@ -465,6 +496,7 @@ async function loadCarouselImages(page = 1) {
         // 创建操作按钮容器
         const actionContainer = document.createElement('td');
         actionContainer.className = 'action-buttons';
+        actionContainer.style.padding = '12px 15px';
         actionContainer.appendChild(editButton);
         actionContainer.appendChild(deleteButton);
         
@@ -472,9 +504,9 @@ async function loadCarouselImages(page = 1) {
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${image.id}</td>
+          <td><img src="http://localhost:3000${image.image_url}" alt="${image.title}" style="max-width: 100px; max-height: 60px; object-fit: cover; border-radius: 4px;"></td>
           <td>${image.title}</td>
           <td>${image.order_num || 0}</td>
-          <td><img src="http://localhost:3000${image.image_url}" alt="${image.title}" style="max-width: 100px; max-height: 60px; object-fit: cover; border-radius: 4px;"></td>
         `;
         row.appendChild(actionContainer);
         carouselBody.appendChild(row);
@@ -529,88 +561,103 @@ function generateCarouselPagination(containerId, currentPage, totalPages) {
   container.appendChild(nextButton);
 }
 
-// 案例分享分页状态
-let caseStudiesPage = 1;
-const caseStudiesPageSize = 10;
-let caseStudiesKeyword = '';
+// 文章管理分页状态
+let articlesPage = 1;
+const articlesPageSize = 10;
+let articlesKeyword = '';
+let articlesType = '';
 
-// 加载案例分享
-async function loadCaseStudies(page = 1, keyword = '') {
+// 加载文章
+async function loadArticles(page = 1, keyword = '', articleType = '') {
   try {
-    // 保存当前搜索关键字
+    // 保存当前搜索参数
     if (keyword !== undefined) {
-      caseStudiesKeyword = keyword;
+      articlesKeyword = keyword;
+    }
+    if (articleType !== undefined) {
+      articlesType = articleType;
     }
     
-    let url = `${apiBaseUrl}/case-studies?page=${page}&pageSize=${caseStudiesPageSize}`;
-    if (caseStudiesKeyword) {
-      url += `&keyword=${encodeURIComponent(caseStudiesKeyword)}`;
+    let url = `${apiBaseUrl}/articles?page=${page}&pageSize=${articlesPageSize}`;
+    if (articlesType) {
+      url += `&articleType=${encodeURIComponent(articlesType)}`;
+    }
+    if (articlesKeyword) {
+      url += `&keyword=${encodeURIComponent(articlesKeyword)}`;
     }
     
     const response = await fetch(url);
     const result = await response.json();
-    const caseStudies = result.data || [];
+    const articles = result.data || [];
     const totalCount = result.total || 0;
     
-    const caseStudiesBody = document.getElementById('case-studies-body');
-    caseStudiesBody.innerHTML = '';
+    const articlesBody = document.getElementById('articles-body');
+    articlesBody.innerHTML = '';
     
-    if (caseStudies.length === 0) {
-      caseStudiesBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">暂无数据</td></tr>';
+    if (articles.length === 0) {
+      articlesBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">暂无数据</td></tr>';
     } else {
-      caseStudies.forEach(caseStudy => {
+      articles.forEach(article => {
         // 格式化日期
-        const formattedDate = caseStudy.publish_date ? new Date(caseStudy.publish_date).toLocaleString('zh-CN') : '';
+        const formattedDate = article.publish_date ? new Date(article.publish_date).toLocaleString('zh-CN') : '';
+        // 文章类型显示文本
+        const typeText = article.article_type === 'case' ? '案例分享' : '问答文章';
         // 创建编辑按钮
         const editButton = document.createElement('button');
         editButton.className = 'edit-button';
         editButton.textContent = '编辑';
-        editButton.onclick = () => openModal('编辑案例分享', 'case-studies', caseStudy);
+        editButton.onclick = () => openModal('编辑文章', 'articles', article);
         
         // 创建删除按钮
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-button';
         deleteButton.textContent = '删除';
-        deleteButton.onclick = () => deleteItem(caseStudy.id, 'case-studies');
+        deleteButton.onclick = () => deleteItem(article.id, 'articles');
         
         // 创建操作按钮容器
         const actionContainer = document.createElement('td');
         actionContainer.className = 'action-buttons';
+        actionContainer.style.padding = '12px 15px';
         actionContainer.appendChild(editButton);
         actionContainer.appendChild(deleteButton);
         
         // 创建行
         const row = document.createElement('tr');
+        const imageHtml = article.image_url ? `<img src="http://localhost:3000${article.image_url}" alt="${article.title}" style="max-width: 80px; max-height: 50px; object-fit: cover; border-radius: 4px;">` : '';
         row.innerHTML = `
-          <td>${caseStudy.id}</td>
-          <td>${caseStudy.title}</td>
+          <td>${article.id}</td>
+          <td>${imageHtml}</td>
+          <td>${article.title}</td>
+          <td>${typeText}</td>
           <td>${formattedDate}</td>
-          <td>${caseStudy.view_count || 0}</td>
+          <td>${article.view_count || 0}</td>
         `;
         row.appendChild(actionContainer);
-        caseStudiesBody.appendChild(row);
+        articlesBody.appendChild(row);
       });
     }
     
     // 生成分页
-    const totalPages = Math.ceil(totalCount / caseStudiesPageSize);
-    generatePagination('case-studies-pagination', page, totalPages);
-    caseStudiesPage = page;
+    const totalPages = Math.ceil(totalCount / articlesPageSize);
+    generatePagination('articles-pagination', page, totalPages);
+    articlesPage = page;
   } catch (error) {
-    console.error('Error loading case studies:', error);
+    console.error('Error loading articles:', error);
   }
 }
 
-// 搜索案例分享
-function searchCaseStudies() {
-  const keyword = document.getElementById('case-study-search').value.trim();
-  loadCaseStudies(1, keyword);
+// 搜索文章
+function searchArticles() {
+  const keyword = document.getElementById('article-search').value.trim();
+  const articleType = document.getElementById('article-type-filter').value;
+  loadArticles(1, keyword, articleType);
 }
 
-// 重置案例分享搜索
-function resetCaseStudiesSearch() {
-  document.getElementById('case-study-search').value = '';
-  loadCaseStudies(1, '');
+// 重置文章搜索
+function resetArticlesSearch() {
+  document.getElementById('article-search').value = '';
+  document.getElementById('article-type-filter').value = '';
+  loadArticles(1, '', '');
 }
 
 // 生成分页
@@ -625,7 +672,9 @@ function generatePagination(containerId, currentPage, totalPages) {
   prevButton.onclick = () => {
     if (currentPage > 1) {
       if (containerId === 'case-studies-pagination') {
-        loadCaseStudies(currentPage - 1);
+        loadCaseStudies(currentPage - 1, caseStudiesKeyword);
+      } else if (containerId === 'articles-pagination') {
+        loadArticles(currentPage - 1, articlesKeyword, articlesType);
       }
     }
   };
@@ -638,7 +687,9 @@ function generatePagination(containerId, currentPage, totalPages) {
     pageButton.className = currentPage === i ? 'active' : '';
     pageButton.onclick = () => {
       if (containerId === 'case-studies-pagination') {
-        loadCaseStudies(i);
+        loadCaseStudies(i, caseStudiesKeyword);
+      } else if (containerId === 'articles-pagination') {
+        loadArticles(i, articlesKeyword, articlesType);
       }
     };
     container.appendChild(pageButton);
@@ -651,7 +702,9 @@ function generatePagination(containerId, currentPage, totalPages) {
   nextButton.onclick = () => {
     if (currentPage < totalPages) {
       if (containerId === 'case-studies-pagination') {
-        loadCaseStudies(currentPage + 1);
+        loadCaseStudies(currentPage + 1, caseStudiesKeyword);
+      } else if (containerId === 'articles-pagination') {
+        loadArticles(currentPage + 1, articlesKeyword, articlesType);
       }
     }
   };
@@ -662,16 +715,23 @@ function generatePagination(containerId, currentPage, totalPages) {
 async function deleteItem(id, type) {
   if (confirm('确定要删除吗？')) {
     try {
-      const response = await fetch(`${apiBaseUrl}/${type}/${id}`, {
+      let apiEndpoint = type;
+      if (type === 'case-studies' || type === 'qa-articles' || type === 'articles') {
+        apiEndpoint = 'articles';
+      }
+      
+      const response = await fetch(`${apiBaseUrl}/${apiEndpoint}/${id}`, {
         method: 'DELETE'
       });
       
       if (response.ok) {
         // 重新加载数据
         if (type === 'case-studies') {
-          loadCaseStudies(caseStudiesPage);
+          loadCaseStudies(caseStudiesPage, caseStudiesKeyword);
         } else if (type === 'qa-articles') {
           loadQAArticles();
+        } else if (type === 'articles') {
+          loadArticles(articlesPage, articlesKeyword, articlesType);
         } else if (type === 'carousel') {
           loadCarouselImages(carouselPage);
         }
@@ -685,23 +745,7 @@ async function deleteItem(id, type) {
   }
 }
 
-// 加载问答文章
-async function loadQAArticles() {
-  try {
-    const response = await fetch(`${apiBaseUrl}/qa-articles`);
-    const articles = await response.json();
-    
-    const qaArticlesList = document.getElementById('qa-articles-list');
-    qaArticlesList.innerHTML = '';
-    
-    articles.forEach(article => {
-      const card = createItemCard(article, 'qa-articles');
-      qaArticlesList.appendChild(card);
-    });
-  } catch (error) {
-    console.error('Error loading QA articles:', error);
-  }
-}
+
 
 // 加载联系表单提交
 async function loadContactSubmissions() {

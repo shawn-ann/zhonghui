@@ -26,11 +26,13 @@ Page({
 
     this.setData({ loading: true });
 
-    // 使用小程序专用接口，返回HTML内容
-    app.wechatRequest(`/case-studies?page=${page}&pageSize=${pageSize}`)
+    // 使用小程序专用接口，返回HTML内容，并指定文章类型为案例
+    app.wechatRequest(`/articles?page=${page}&pageSize=${pageSize}&articleType=case`)
       .then(res => {
+        // 处理返回的数据结构
+        const caseStudyData = Array.isArray(res) ? res : [];
         // 格式化数据
-        const formattedCaseStudies = res.map(item => {
+        const formattedCaseStudies = caseStudyData.map(item => {
           // 格式化日期
           let formattedDate = '';
           if (item.publish_date) {

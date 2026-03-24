@@ -34,8 +34,10 @@ Page({
   fetchCarouselImages() {
     app.request('/carousel')
       .then(res => {
+        // 处理返回的数据结构
+        const carouselData = res.data || [];
         // 将相对路径转换为完整的 URL
-        const carouselImages = res.map(item => ({
+        const carouselImages = carouselData.map(item => ({
           ...item,
           image_url: app.globalData.apiBaseUrl.replace('/api', '') + item.image_url
         }));
@@ -57,11 +59,13 @@ Page({
 
   // 获取案例分享
   fetchCaseStudies() {
-    // 添加分页参数，默认获取前10条
-    app.request('/case-studies?page=1&pageSize=10')
+    // 添加分页参数和文章类型参数，默认获取前10条案例分享
+    app.wechatRequest('/articles?page=1&pageSize=10&articleType=case')
       .then(res => {
+        // 处理返回的数据结构
+        const caseStudyData = Array.isArray(res) ? res : [];
         // 将相对路径转换为完整的 URL，并格式化日期
-        const caseStudies = res.map(item => {
+        const caseStudies = caseStudyData.map(item => {
           // 格式化日期为年月日格式
           let formattedDate = '';
           if (item.publish_date) {

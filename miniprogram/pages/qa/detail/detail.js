@@ -24,11 +24,10 @@ Page({
   // 获取文章详情
   fetchArticleDetails() {
     const { id, type } = this.data;
-    // 案例分享使用小程序专用接口，返回HTML内容
-    const endpoint = type === 'case' ? `/case-studies/${id}` : `/qa-articles/${id}`;
-    const requestMethod = type === 'case' ? app.wechatRequest(endpoint) : app.request(endpoint);
+    // 使用统一的小程序专用接口，返回HTML内容
+    const endpoint = `/articles/${id}`;
     
-    requestMethod
+    app.wechatRequest(endpoint)
       .then(res => {
         // 格式化日期为年月日 时分秒格式
         let formattedDate = '';

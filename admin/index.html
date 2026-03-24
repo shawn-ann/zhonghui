@@ -22,8 +22,7 @@
     <nav class="admin-nav">
       <ul>
         <li><a href="#carousel" class="nav-link active" data-section="carousel">轮播图片管理</a></li>
-        <li><a href="#case-studies" class="nav-link" data-section="case-studies">案例分享管理</a></li>
-        <li><a href="#qa-articles" class="nav-link" data-section="qa-articles">问答文章管理</a></li>
+        <li><a href="#articles" class="nav-link" data-section="articles">文章管理</a></li>
         <li><a href="#contact-submissions" class="nav-link" data-section="contact-submissions">联系表单管理</a></li>
       </ul>
     </nav>
@@ -38,9 +37,9 @@
               <thead>
                 <tr>
                   <th>ID</th>
+                  <th>图片</th>
                   <th>标题</th>
                   <th>排序</th>
-                  <th>图片</th>
                   <th>操作</th>
                 </tr>
               </thead>
@@ -51,38 +50,37 @@
         </div>
       </section>
       
-      <section id="case-studies-section" class="section">
-        <h2>案例分享管理</h2>
+      <section id="articles-section" class="section">
+        <h2>文章管理</h2>
         <div class="section-content">
           <div class="search-bar">
-            <input type="text" id="case-study-search" placeholder="搜索标题关键字...">
-            <button id="case-study-search-btn" class="search-button">搜索</button>
-            <button id="case-study-reset-btn" class="reset-button">重置</button>
+            <select id="article-type-filter" class="article-type-select">
+              <option value="">全部类型</option>
+              <option value="case">案例分享</option>
+              <option value="qa">问答文章</option>
+            </select>
+            <input type="text" id="article-search" placeholder="搜索标题关键字...">
+            <button id="article-search-btn" class="search-button">搜索</button>
+            <button id="article-reset-btn" class="reset-button">重置</button>
           </div>
-          <button id="add-case-study" class="add-button">添加案例分享</button>
+          <button id="add-article" class="add-button">添加文章</button>
           <div class="table-container">
-            <table id="case-studies-table" class="data-table">
+            <table id="articles-table" class="data-table">
               <thead>
                 <tr>
                   <th>ID</th>
+                  <th>图片</th>
                   <th>标题</th>
+                  <th>文章类型</th>
                   <th>发布日期</th>
                   <th>浏览次数</th>
                   <th>操作</th>
                 </tr>
               </thead>
-              <tbody id="case-studies-body"></tbody>
+              <tbody id="articles-body"></tbody>
             </table>
-            <div id="case-studies-pagination" class="pagination"></div>
+            <div id="articles-pagination" class="pagination"></div>
           </div>
-        </div>
-      </section>
-      
-      <section id="qa-articles-section" class="section">
-        <h2>问答文章管理</h2>
-        <div class="section-content">
-          <button id="add-qa-article" class="add-button">添加问答文章</button>
-          <div id="qa-articles-list" class="item-list"></div>
         </div>
       </section>
       
@@ -114,6 +112,13 @@
             <label for="title">标题 <span class="required">*</span></label>
             <input type="text" id="title" name="title">
             <div id="title-error" class="error-message"></div>
+          </div>
+          <div class="form-group" id="article-type-group" style="display: none;">
+            <label for="article-type">文章类型 <span class="required">*</span></label>
+            <select id="article-type" name="articleType">
+              <option value="case">案例分享</option>
+              <option value="qa">问答文章</option>
+            </select>
           </div>
           <div class="form-group" id="order-num-group">
             <label for="order-num">排序</label>

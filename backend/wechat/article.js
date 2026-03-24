@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const CaseStudyModel = require('../models/caseStudy');
+const ArticleModel = require('../models/article');
 const { QuillDeltaToHtmlConverter } = require('quill-delta-to-html');
 
 // 将 Quill Delta 转换为 HTML
@@ -15,17 +15,20 @@ function convertDeltaToHtml(deltaJson) {
   }
 }
 
-// 小程序专用：获取案例分享列表（返回HTML内容）
+// 小程序专用：获取文章列表（返回HTML内容）
 router.get('/', async (req, res) => {
   try {
-    const { page, pageSize } = req.query;
+    const { page, pageSize, articleType } = req.query;
     
-    let rows;
+    let result;
     if (page && pageSize) {
-      rows = await CaseStudyModel.getPaginated(page, pageSize);
+      result = await ArticleModel.getPaginated(page, pageSize, articleType);
     } else {
-      rows = await CaseStudyModel.getAll();
+      result = await ArticleModel.getAll(articleType);
     }
+    
+    // 处理返回数据格式
+    const rows = Array.isArray(result) ? result : result.data || [];
     
     // 将 Delta JSON 转换为 HTML
     const rowsWithHtml = rows.map(item => ({
@@ -36,31 +39,31 @@ router.get('/', async (req, res) => {
     // 小程序端直接返回HTML内容
     res.json(rowsWithHtml);
   } catch (error) {
-    console.error('Error getting case studies for wechat:', error);
-    res.status(500).json({ error: 'Failed to get case studies', details: error.message });
+    console.error('Error getting articles for wechat:', error);
+    res.status(500).json({ error: 'Failed to get articles', details: error.message });
   }
 });
 
-// 小程序专用：获取单个案例详情（返回HTML内容）
+// 小程序专用：获取单个文章详情（返回HTML内容）
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const caseStudy = await CaseStudyModel.getById(id);
-    if (!caseStudy) {
-      return res.status(404).json({ error: 'Case study not found' });
+    const article = await ArticleModel.getById(id);
+    if (!article) {
+      return res.status(404).json({ error: 'Article not found' });
     }
     // 增加浏览次数
-    await CaseStudyModel.incrementViewCount(id);
+    await ArticleModel.incrementViewCount(id);
     // 将 Delta JSON 转换为 HTML
-    const caseStudyWithHtml = {
-      ...caseStudy,
-      content: convertDeltaToHtml(caseStudy.content)
+    const articleWithHtml = {
+      ...article,
+      content: convertDeltaToHtml(article.content)
     };
     // 小程序端直接返回HTML内容
-    res.json(caseStudyWithHtml);
+    res.json(articleWithHtml);
   } catch (error) {
-    console.error('Error getting case study for wechat:', error);
-    res.status(500).json({ error: 'Failed to get case study' });
+    console.error('Error getting article for wechat:', error);
+    res.status(500).json({ error: 'Failed to get article' });
   }
 });
 
