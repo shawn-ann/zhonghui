@@ -16,17 +16,27 @@ function convertDeltaToHtml(deltaJson) {
   }
 }
 
-// Get all case studies with pagination
+// Get all case studies with pagination and search
 router.get('/', async (req, res) => {
   try {
     console.log('Request query:', req.query);
-    const { page, pageSize } = req.query;
+    const { page, pageSize, keyword } = req.query;
     
     let rows;
     let totalCount = 0;
     
+    // 构建查询条件
+    let whereClause = '';
+    let queryParams = [];
+    
+    if (keyword && keyword.trim() !== '') {
+      whereClause = 'WHERE title LIKE ?';
+      queryParams.push(`%${keyword}%`);
+    }
+    
     // 获取总记录数
-    const [countResult] = await pool.query('SELECT COUNT(*) as total FROM case_studies');
+    const countQuery = `SELECT COUNT(*) as total FROM case_studies ${whereClause}`;
+    const [countResult] = await pool.query(countQuery, queryParams);
     totalCount = countResult[0].total;
     
     if (page && pageSize) {
@@ -34,12 +44,11 @@ router.get('/', async (req, res) => {
       const sizeNum = parseInt(pageSize) || 10;
       const offset = (pageNum - 1) * sizeNum;
       // 使用 query 而不是 execute，因为 execute 对 LIMIT/OFFSET 参数支持有问题
-      [rows] = await pool.query(
-        'SELECT * FROM case_studies ORDER BY publish_date DESC LIMIT ? OFFSET ?',
-        [sizeNum, offset]
-      );
+      const dataQuery = `SELECT * FROM case_studies ${whereClause} ORDER BY publish_date DESC LIMIT ? OFFSET ?`;
+      [rows] = await pool.query(dataQuery, [...queryParams, sizeNum, offset]);
     } else {
-      [rows] = await pool.query('SELECT * FROM case_studies ORDER BY publish_date DESC');
+      const dataQuery = `SELECT * FROM case_studies ${whereClause} ORDER BY publish_date DESC`;
+      [rows] = await pool.query(dataQuery, queryParams);
     }
     
     console.log('Query result:', rows.length, 'rows, total:', totalCount);

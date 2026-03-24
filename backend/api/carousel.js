@@ -1,14 +1,40 @@
 const express = require('express');
 const router = express.Router();
+const pool = require('../config/db');
 const CarouselModel = require('../models/carousel');
 
-// Get all carousel images
+// Get all carousel images with pagination
 router.get('/', async (req, res) => {
   try {
-    const images = await CarouselModel.getAll();
-    res.json(images);
+    const { page, pageSize } = req.query;
+    
+    let rows;
+    let totalCount = 0;
+    
+    // 获取总记录数
+    const [countResult] = await pool.query('SELECT COUNT(*) as total FROM carousel_images');
+    totalCount = countResult[0].total;
+    
+    if (page && pageSize) {
+      const pageNum = parseInt(page) || 1;
+      const sizeNum = parseInt(pageSize) || 10;
+      const offset = (pageNum - 1) * sizeNum;
+      // 使用 query 而不是 execute，因为 execute 对 LIMIT/OFFSET 参数支持有问题
+      [rows] = await pool.query(
+        'SELECT * FROM carousel_images ORDER BY order_num ASC LIMIT ? OFFSET ?',
+        [sizeNum, offset]
+      );
+    } else {
+      [rows] = await pool.query('SELECT * FROM carousel_images ORDER BY order_num ASC');
+    }
+    
+    res.json({ 
+      data: rows, 
+      total: totalCount 
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get carousel images' });
+    console.error('Error getting carousel images:', error);
+    res.status(500).json({ error: 'Failed to get carousel images', details: error.message });
   }
 });
 

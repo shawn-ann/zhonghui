@@ -270,10 +270,10 @@ function setupModal() {
         // 重新加载数据
         switch (window.currentItemType) {
           case 'carousel':
-            loadCarouselImages();
+            loadCarouselImages(carouselPage);
             break;
           case 'case-studies':
-            loadCaseStudies(caseStudiesPage);
+            loadCaseStudies(caseStudiesPage, caseStudiesKeyword);
             break;
           case 'qa-articles':
             loadQAArticles();
@@ -296,17 +296,38 @@ function setupEventListeners() {
     localStorage.removeItem('adminLoggedIn');
     window.location.href = 'login.html';
   });
-  
+
   // 添加轮播图片
   document.getElementById('add-carousel').addEventListener('click', () => {
     openModal('添加轮播图片', 'carousel');
   });
-  
+
   // 添加案例分享
   document.getElementById('add-case-study').addEventListener('click', () => {
     openModal('添加案例分享', 'case-studies');
   });
-  
+
+  // 案例分享搜索
+  const searchBtn = document.getElementById('case-study-search-btn');
+  const resetBtn = document.getElementById('case-study-reset-btn');
+  const searchInput = document.getElementById('case-study-search');
+
+  if (searchBtn) {
+    searchBtn.addEventListener('click', searchCaseStudies);
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', resetCaseStudiesSearch);
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        searchCaseStudies();
+      }
+    });
+  }
+
   // 添加问答文章
   document.getElementById('add-qa-article').addEventListener('click', () => {
     openModal('添加问答文章', 'qa-articles');
@@ -410,32 +431,123 @@ function openModal(title, type, item = null) {
   document.getElementById('modal').classList.add('show');
 }
 
+// 轮播图分页状态
+let carouselPage = 1;
+const carouselPageSize = 10;
+
 // 加载轮播图片
-async function loadCarouselImages() {
+async function loadCarouselImages(page = 1) {
   try {
-    const response = await fetch(`${apiBaseUrl}/carousel`);
-    const images = await response.json();
+    const response = await fetch(`${apiBaseUrl}/carousel?page=${page}&pageSize=${carouselPageSize}`);
+    const result = await response.json();
+    const images = result.data || [];
+    const totalCount = result.total || 0;
     
-    const carouselList = document.getElementById('carousel-list');
-    carouselList.innerHTML = '';
+    const carouselBody = document.getElementById('carousel-body');
+    carouselBody.innerHTML = '';
     
-    images.forEach(image => {
-      const card = createItemCard(image, 'carousel');
-      carouselList.appendChild(card);
-    });
+    if (images.length === 0) {
+      carouselBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">暂无数据</td></tr>';
+    } else {
+      images.forEach(image => {
+        // 创建编辑按钮
+        const editButton = document.createElement('button');
+        editButton.className = 'edit-button';
+        editButton.textContent = '编辑';
+        editButton.onclick = () => openModal('编辑轮播图片', 'carousel', image);
+        
+        // 创建删除按钮
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-button';
+        deleteButton.textContent = '删除';
+        deleteButton.onclick = () => deleteItem(image.id, 'carousel');
+        
+        // 创建操作按钮容器
+        const actionContainer = document.createElement('td');
+        actionContainer.className = 'action-buttons';
+        actionContainer.appendChild(editButton);
+        actionContainer.appendChild(deleteButton);
+        
+        // 创建行
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${image.id}</td>
+          <td>${image.title}</td>
+          <td>${image.order_num || 0}</td>
+          <td><img src="http://localhost:3000${image.image_url}" alt="${image.title}" style="max-width: 100px; max-height: 60px; object-fit: cover; border-radius: 4px;"></td>
+        `;
+        row.appendChild(actionContainer);
+        carouselBody.appendChild(row);
+      });
+    }
+    
+    // 生成分页
+    const totalPages = Math.ceil(totalCount / carouselPageSize);
+    generateCarouselPagination('carousel-pagination', page, totalPages);
+    carouselPage = page;
   } catch (error) {
     console.error('Error loading carousel images:', error);
   }
 }
 
+// 生成轮播图分页
+function generateCarouselPagination(containerId, currentPage, totalPages) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  
+  // 上一页按钮
+  const prevButton = document.createElement('button');
+  prevButton.textContent = '上一页';
+  prevButton.disabled = currentPage === 1;
+  prevButton.onclick = () => {
+    if (currentPage > 1) {
+      loadCarouselImages(currentPage - 1);
+    }
+  };
+  container.appendChild(prevButton);
+  
+  // 页码按钮
+  for (let i = 1; i <= totalPages; i++) {
+    const pageButton = document.createElement('button');
+    pageButton.textContent = i;
+    pageButton.className = currentPage === i ? 'active' : '';
+    pageButton.onclick = () => {
+      loadCarouselImages(i);
+    };
+    container.appendChild(pageButton);
+  }
+  
+  // 下一页按钮
+  const nextButton = document.createElement('button');
+  nextButton.textContent = '下一页';
+  nextButton.disabled = currentPage === totalPages;
+  nextButton.onclick = () => {
+    if (currentPage < totalPages) {
+      loadCarouselImages(currentPage + 1);
+    }
+  };
+  container.appendChild(nextButton);
+}
+
 // 案例分享分页状态
 let caseStudiesPage = 1;
 const caseStudiesPageSize = 10;
+let caseStudiesKeyword = '';
 
 // 加载案例分享
-async function loadCaseStudies(page = 1) {
+async function loadCaseStudies(page = 1, keyword = '') {
   try {
-    const response = await fetch(`${apiBaseUrl}/case-studies?page=${page}&pageSize=${caseStudiesPageSize}`);
+    // 保存当前搜索关键字
+    if (keyword !== undefined) {
+      caseStudiesKeyword = keyword;
+    }
+    
+    let url = `${apiBaseUrl}/case-studies?page=${page}&pageSize=${caseStudiesPageSize}`;
+    if (caseStudiesKeyword) {
+      url += `&keyword=${encodeURIComponent(caseStudiesKeyword)}`;
+    }
+    
+    const response = await fetch(url);
     const result = await response.json();
     const caseStudies = result.data || [];
     const totalCount = result.total || 0;
@@ -487,6 +599,18 @@ async function loadCaseStudies(page = 1) {
   } catch (error) {
     console.error('Error loading case studies:', error);
   }
+}
+
+// 搜索案例分享
+function searchCaseStudies() {
+  const keyword = document.getElementById('case-study-search').value.trim();
+  loadCaseStudies(1, keyword);
+}
+
+// 重置案例分享搜索
+function resetCaseStudiesSearch() {
+  document.getElementById('case-study-search').value = '';
+  loadCaseStudies(1, '');
 }
 
 // 生成分页
@@ -549,7 +673,7 @@ async function deleteItem(id, type) {
         } else if (type === 'qa-articles') {
           loadQAArticles();
         } else if (type === 'carousel') {
-          loadCarouselImages();
+          loadCarouselImages(carouselPage);
         }
       } else {
         alert('删除失败，请重试');

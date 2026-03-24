@@ -33,13 +33,32 @@
         <h2>轮播图片管理</h2>
         <div class="section-content">
           <button id="add-carousel" class="add-button">添加轮播图片</button>
-          <div id="carousel-list" class="item-list"></div>
+          <div class="table-container">
+            <table id="carousel-table" class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>标题</th>
+                  <th>排序</th>
+                  <th>图片</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="carousel-body"></tbody>
+            </table>
+            <div id="carousel-pagination" class="pagination"></div>
+          </div>
         </div>
       </section>
       
       <section id="case-studies-section" class="section">
         <h2>案例分享管理</h2>
         <div class="section-content">
+          <div class="search-bar">
+            <input type="text" id="case-study-search" placeholder="搜索标题关键字...">
+            <button id="case-study-search-btn" class="search-button">搜索</button>
+            <button id="case-study-reset-btn" class="reset-button">重置</button>
+          </div>
           <button id="add-case-study" class="add-button">添加案例分享</button>
           <div class="table-container">
             <table id="case-studies-table" class="data-table">
