@@ -2,7 +2,15 @@
 <view class="container">
   <!-- 搜索框 -->
   <view class="search-container">
-    <input type="text" placeholder="请输入关键词" class="search-input" />
+    <input 
+      type="text" 
+      placeholder="请输入关键词" 
+      class="search-input" 
+      bindinput="onSearchInput"
+      bindconfirm="onSearch"
+      confirm-type="search"
+      value="{{searchKeyword}}"
+    />
   </view>
 
   <!-- 轮播图 -->

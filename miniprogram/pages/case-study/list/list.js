@@ -7,10 +7,28 @@ Page({
     page: 1,
     pageSize: 10,
     loading: false,
-    hasMore: true
+    hasMore: true,
+    keyword: '',
+    isSearch: false,
+    type: 'case' // case, qa, search
   },
 
-  onLoad() {
+  onLoad(options) {
+    if (options.keyword) {
+      this.setData({
+        keyword: options.keyword,
+        isSearch: true,
+        type: 'search'
+      });
+      // 重置页码
+      this.setData({ page: 1 });
+    } else if (options.type) {
+      this.setData({
+        type: options.type
+      });
+      // 重置页码
+      this.setData({ page: 1 });
+    }
     this.fetchCaseStudies();
   },
 
@@ -20,14 +38,28 @@ Page({
     }
   },
 
-  // 获取案例分享列表（带分页）
+  // 获取文章列表（带分页）
   fetchCaseStudies() {
-    const { page, pageSize, caseStudies } = this.data;
+    const { page, pageSize, caseStudies, keyword, type } = this.data;
 
     this.setData({ loading: true });
 
-    // 使用小程序专用接口，返回HTML内容，并指定文章类型为案例
-    app.wechatRequest(`/articles?page=${page}&pageSize=${pageSize}&articleType=case`)
+    // 构建请求URL
+    let url = `/articles?page=${page}&pageSize=${pageSize}`;
+    
+    // 根据类型设置文章类型参数
+    if (type === 'case' || type === 'qa') {
+      url += `&articleType=${type}`;
+    }
+    // 搜索模式不指定文章类型，同时搜索案例和QA
+    
+    // 添加关键词搜索
+    if (keyword) {
+      url += `&keyword=${encodeURIComponent(keyword)}`;
+    }
+
+    // 使用小程序专用接口，返回HTML内容
+    app.wechatRequest(url)
       .then(res => {
         // 处理返回的数据结构
         const caseStudyData = Array.isArray(res) ? res : [];
@@ -58,16 +90,24 @@ Page({
         });
       })
       .catch(err => {
-        console.error('Failed to fetch case studies:', err);
+        console.error('Failed to fetch articles:', err);
         this.setData({ loading: false });
       });
   },
 
-  // 导航到案例详情
+  // 导航到文章详情
   navigateToDetail(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: `/pages/case-study/detail/detail?id=${id}`
-    });
+    const articleType = e.currentTarget.dataset.type;
+    
+    if (articleType === 'case') {
+      wx.navigateTo({
+        url: `/pages/case-study/detail/detail?id=${id}`
+      });
+    } else if (articleType === 'qa') {
+      wx.navigateTo({
+        url: `/pages/qa/detail/detail?id=${id}&type=qa`
+      });
+    }
   }
 })

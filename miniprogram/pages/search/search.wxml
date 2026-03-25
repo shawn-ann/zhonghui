@@ -1,9 +1,9 @@
-<!-- qa.wxml -->
+<!-- search.wxml -->
 <view class="container">
   
   <!-- 文章列表 -->
   <view class="case-list">
-    <view class="case-item" wx:for="{{articles}}" wx:key="id" bindtap="navigateToDetail" data-id="{{item.id}}">
+    <view class="case-item" wx:for="{{articles}}" wx:key="id" bindtap="navigateToDetail" data-id="{{item.id}}" data-type="{{item.article_type}}">
       <view class="case-content">
         <text class="case-title">{{item.title}}</text>
         <view class="case-meta">

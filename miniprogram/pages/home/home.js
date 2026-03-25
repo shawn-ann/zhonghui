@@ -22,7 +22,8 @@ Page({
         icon: "/images/icon/car4.png"
       }
     ],
-    caseStudies: []
+    caseStudies: [],
+    searchKeyword: ''
   },
 
   onLoad() {
@@ -127,6 +128,30 @@ Page({
   navigateToCaseStudyList() {
     wx.navigateTo({
       url: '/pages/case-study/list/list'
+    });
+  },
+
+  // 搜索输入事件
+  onSearchInput(e) {
+    this.setData({
+      searchKeyword: e.detail.value
+    });
+  },
+
+  // 搜索按钮点击事件
+  onSearch() {
+    const { searchKeyword } = this.data;
+    if (!searchKeyword.trim()) {
+      wx.showToast({
+        title: '请输入搜索关键词',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 导航到搜索结果页面并传递搜索关键词
+    wx.navigateTo({
+      url: `/pages/search/search?keyword=${encodeURIComponent(searchKeyword)}`
     });
   }
 })

@@ -18,6 +18,8 @@
   padding: 15rpx 20rpx;
   font-size: 28rpx;
   color: #757575;
+  border: none;
+  outline: none;
 }
 
 /* 轮播图 */

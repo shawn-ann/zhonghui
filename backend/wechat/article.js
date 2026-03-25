@@ -18,17 +18,21 @@ function convertDeltaToHtml(deltaJson) {
 // 小程序专用：获取文章列表（返回HTML内容）
 router.get('/', async (req, res) => {
   try {
-    const { page, pageSize, articleType } = req.query;
+    const { page, pageSize, articleType, keyword } = req.query;
+    
+    console.log('Wechat API - Received params:', { page, pageSize, articleType, keyword });
     
     let result;
     if (page && pageSize) {
-      result = await ArticleModel.getPaginated(page, pageSize, articleType);
+      console.log('Wechat API - Calling getPaginated with keyword:', keyword);
+      result = await ArticleModel.getPaginated(page, pageSize, articleType, keyword);
     } else {
       result = await ArticleModel.getAll(articleType);
     }
     
     // 处理返回数据格式
     const rows = Array.isArray(result) ? result : result.data || [];
+    console.log('Wechat API - Found articles:', rows.length);
     
     // 将 Delta JSON 转换为 HTML
     const rowsWithHtml = rows.map(item => ({

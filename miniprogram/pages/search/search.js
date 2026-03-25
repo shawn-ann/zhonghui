@@ -1,4 +1,4 @@
-// qa.js
+// search.js
 const app = getApp();
 
 Page({
@@ -7,11 +7,24 @@ Page({
     page: 1,
     pageSize: 10,
     loading: false,
-    hasMore: true
+    hasMore: true,
+    keyword: ''
   },
 
-  onLoad() {
-    this.fetchArticles();
+  onLoad(options) {
+    console.log('Search page onLoad options:', options);
+    if (options.keyword) {
+      console.log('Received keyword:', options.keyword);
+      // 解码 URL 编码的关键词
+      const decodedKeyword = decodeURIComponent(options.keyword);
+      console.log('Decoded keyword:', decodedKeyword);
+      this.setData({
+        keyword: decodedKeyword
+      });
+      // 重置页码
+      this.setData({ page: 1 });
+      this.fetchArticles();
+    }
   },
 
   onReachBottom() {
@@ -22,13 +35,21 @@ Page({
 
   // 获取文章列表（带分页）
   fetchArticles() {
-    const { page, pageSize, articles } = this.data;
+    const { page, pageSize, articles, keyword } = this.data;
 
     this.setData({ loading: true });
 
-    // 构建请求URL，指定文章类型为QA
-    let url = `/articles?page=${page}&pageSize=${pageSize}&articleType=qa`;
+    // 构建请求URL，不指定文章类型，同时搜索案例和QA
+    let url = `/articles?page=${page}&pageSize=${pageSize}`;
+    
+    // 添加关键词搜索
+    if (keyword) {
+      url += `&keyword=${encodeURIComponent(keyword)}`;
+    }
 
+    console.log('Fetching articles with URL:', url);
+    console.log('Keyword:', keyword);
+    
     // 使用小程序专用接口，返回HTML内容
     app.wechatRequest(url)
       .then(res => {
@@ -69,8 +90,16 @@ Page({
   // 导航到文章详情
   navigateToDetail(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: `/pages/qa/detail/detail?id=${id}&type=qa`
-    });
+    const articleType = e.currentTarget.dataset.type;
+    
+    if (articleType === 'case') {
+      wx.navigateTo({
+        url: `/pages/case-study/detail/detail?id=${id}`
+      });
+    } else if (articleType === 'qa') {
+      wx.navigateTo({
+        url: `/pages/qa/detail/detail?id=${id}&type=qa`
+      });
+    }
   }
 });
