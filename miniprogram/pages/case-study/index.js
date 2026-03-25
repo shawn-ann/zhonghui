@@ -102,11 +102,11 @@ Page({
     
     if (articleType === 'case') {
       wx.navigateTo({
-        url: `/pages/case-study/detail/detail?id=${id}`
+        url: `/pages/article-detail/index?id=${id}`
       });
     } else if (articleType === 'qa') {
       wx.navigateTo({
-        url: `/pages/qa/detail/detail?id=${id}&type=qa`
+        url: `/pages/qa/index?id=${id}&type=qa`
       });
     }
   }

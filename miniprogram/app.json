@@ -1,11 +1,10 @@
 {
   "pages": [
     "pages/home/home",
-    "pages/qa/qa",
-    "pages/qa/detail/detail",
+    "pages/qa/index",
     "pages/contact/contact",
-    "pages/case-study/list/list",
-    "pages/case-study/detail/detail",
+    "pages/case-study/index",
+    "pages/article-detail/index",
     "pages/search/search"
   ],
   "window": {
@@ -27,7 +26,7 @@
         "selectedIconPath": "images/icon/shouye-zhihui.png"
       },
       {
-        "pagePath": "pages/qa/qa",
+        "pagePath": "pages/qa/index",
         "text": "常见Q&A",
         "iconPath": "images/icon/wenda.png",
         "selectedIconPath": "images/icon/wenda.png"

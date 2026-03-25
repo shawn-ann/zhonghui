@@ -70,7 +70,7 @@ Page({
   navigateToDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/qa/detail/detail?id=${id}&type=qa`
+      url: `/pages/article-detail/index?id=${id}`
     });
   }
 });

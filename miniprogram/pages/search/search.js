@@ -90,16 +90,8 @@ Page({
   // 导航到文章详情
   navigateToDetail(e) {
     const id = e.currentTarget.dataset.id;
-    const articleType = e.currentTarget.dataset.type;
-    
-    if (articleType === 'case') {
-      wx.navigateTo({
-        url: `/pages/case-study/detail/detail?id=${id}`
-      });
-    } else if (articleType === 'qa') {
-      wx.navigateTo({
-        url: `/pages/qa/detail/detail?id=${id}&type=qa`
-      });
-    }
+    wx.navigateTo({
+      url: `/pages/article-detail/index?id=${id}`
+    });
   }
 });

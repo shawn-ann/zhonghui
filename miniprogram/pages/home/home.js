@@ -120,14 +120,21 @@ Page({
   navigateToCaseStudy(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/case-study/detail/detail?id=${id}`
+      url: `/pages/article-detail/index?id=${id}`
     });
   },
 
   // 导航到案例分享列表
   navigateToCaseStudyList() {
+    console.log('navigateToCaseStudyList called');
     wx.navigateTo({
-      url: '/pages/case-study/list/list'
+      url: '/pages/case-study/index',
+      success: function(res) {
+        console.log('Navigation success:', res);
+      },
+      fail: function(err) {
+        console.log('Navigation failed:', err);
+      }
     });
   },
 

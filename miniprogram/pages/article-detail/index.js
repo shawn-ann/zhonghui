@@ -3,18 +3,18 @@ const app = getApp();
 
 Page({
   data: {
-    caseStudy: {},
+    article: {},
     loading: true
   },
 
   onLoad: function (options) {
     const { id } = options;
     if (id) {
-      this.loadCaseStudyDetail(id);
+      this.loadArticleDetail(id);
     }
   },
 
-  loadCaseStudyDetail: function (id) {
+  loadArticleDetail: function (id) {
     const endpoint = `/articles/${id}`;
     
     app.wechatRequest(endpoint)
@@ -34,7 +34,7 @@ Page({
         }
         
         this.setData({
-          caseStudy: {
+          article: {
             ...res,
             publish_date: formattedDate,
             image_url: imageUrl
@@ -48,16 +48,16 @@ Page({
         });
       })
       .catch(error => {
-        console.error('加载案例详情失败:', error);
+        console.error('加载文章详情失败:', error);
         wx.showToast({
           title: '加载失败',
           icon: 'none'
         });
         this.setData({
-          caseStudy: {
-            title: "案例分享详情",
+          article: {
+            title: "文章详情",
             content: "<p>文章内容加载中...</p>",
-            image_url: "https://via.placeholder.com/300x200?text=Case",
+            image_url: "https://via.placeholder.com/300x200?text=Article",
             publish_date: "2026年3月17日 12:00:00",
             view_count: 100
           },

@@ -17,14 +17,14 @@
   color: #999;
 }
 
-.case-detail {
+.article-detail {
   background-color: white;
   border-radius: 16rpx;
   padding: 32rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
 }
 
-.case-title {
+.article-title {
   font-size: 36rpx;
   font-weight: bold;
   color: #333;
@@ -33,7 +33,7 @@
   display: block;
 }
 
-.case-date {
+.article-date {
   font-size: 22rpx;
   color: #999;
   display: block;
@@ -42,17 +42,17 @@
   border-bottom: 1rpx solid #f0f0f0;
 }
 
-.case-content {
+.article-content {
   margin-top: 32rpx;
 }
 
-.case-footer {
+.article-footer {
   margin-top: 40rpx;
   padding-top: 20rpx;
   border-top: 1rpx solid #f0f0f0;
 }
 
-.case-stats {
+.article-stats {
   display: flex;
   align-items: center;
 }
@@ -71,36 +71,36 @@
 }
 
 /* 富文本样式 */
-.case-content {
+.article-content {
   font-size: 28rpx; /* 从 32rpx 调整为 28rpx */
   line-height: 1.6;
   color: #333;
 }
 
-.case-content p {
+.article-content p {
   margin-bottom: 24rpx;
 }
 
-.case-content img {
+.article-content img {
   max-width: 100% !important;
   height: auto !important;
   margin: 24rpx 0;
   border-radius: 8rpx;
 }
 
-.case-content h2 {
+.article-content h2 {
   font-size: 32rpx; /* 从 36rpx 调整为 32rpx */
   font-weight: bold;
   margin: 32rpx 0 24rpx 0;
   color: #333;
 }
 
-.case-content ul, .case-content ol {
+.article-content ul, .article-content ol {
   margin: 24rpx 0;
   padding-left: 48rpx;
 }
 
-.case-content li {
+.article-content li {
   margin-bottom: 16rpx;
   line-height: 1.5;
 }
