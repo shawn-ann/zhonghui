@@ -1,5 +1,5 @@
 {
-  "appid": "touristappid",
+  "appid": "wx71285e12c2ef0fa1",
   "compileType": "miniprogram",
   "libVersion": "3.15.0",
   "packOptions": {
@@ -13,7 +13,12 @@
     "minified": true,
     "enhance": true,
     "showShadowRootInWxmlPanel": true,
-    "packNpmRelationList": [],
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./"
+      }
+    ],
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],

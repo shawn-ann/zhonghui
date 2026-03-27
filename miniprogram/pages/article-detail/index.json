@@ -1,5 +1,5 @@
 {
   "usingComponents": {
-    "mp-html": "/components/mp-html/dist/mp-weixin/index"
+    "mp-html": "mp-html"
   }
 }
