@@ -19,12 +19,13 @@ Page({
     loading: false,
     currentDate: new Date().toISOString().split('T')[0],
     intendedPrograms: [
-      { label: "互惠美国", value: "互惠美国" },
-      { label: "互惠澳洲", value: "互惠澳洲" },
-      { label: "澳洲WHV工作", value: "澳洲WHV工作" },
-      { label: "美国Camp", value: "美国Camp" },
-      { label: "其他", value: "其他" }
+      { label: "互惠美国", value: "互惠美国", checked: false },
+      { label: "互惠澳洲", value: "互惠澳洲", checked: false },
+      { label: "澳洲WHV工作", value: "澳洲WHV工作", checked: false },
+      { label: "美国Camp", value: "美国Camp", checked: false },
+      { label: "其他", value: "其他", checked: false }
     ],
+    selectedIntendedPrograms: [],
     educationLevels: [
       { label: "研究生或以上", value: "研究生或以上" },
       { label: "本科", value: "本科" },
@@ -33,18 +34,25 @@ Page({
       { label: "其他", value: "其他" }
     ],
     conditions: [
-      { label: "无犯罪记录", value: "无犯罪记录" },
-      { label: "未婚未育", value: "未婚未育" },
-      { label: "近五年内无心理疾病/手术史", value: "近五年内无心理疾病/手术史" },
-      { label: "有中国C1C2驾照", value: "有中国C1C2驾照" }
+      { label: "无犯罪记录", value: "无犯罪记录", checked: false },
+      { label: "未婚未育", value: "未婚未育", checked: false },
+      { label: "近五年内无心理疾病/手术史", value: "近五年内无心理疾病/手术史", checked: false },
+      { label: "有中国C1C2驾照", value: "有中国C1C2驾照", checked: false }
+    ],
+    educationLevels: [
+      { label: "研究生或以上", value: "研究生或以上", checked: false },
+      { label: "本科", value: "本科", checked: false },
+      { label: "大专", value: "大专", checked: false },
+      { label: "高中毕业", value: "高中毕业", checked: false },
+      { label: "其他", value: "其他", checked: false }
     ],
     englishLevels: [
-      { label: "无语言成绩", value: "无语言成绩" },
-      { label: "有语言成绩", value: "有语言成绩" }
+      { label: "无语言成绩", value: "无语言成绩", checked: false },
+      { label: "有语言成绩", value: "有语言成绩", checked: false }
     ],
     childcareOptions: [
-      { label: "否", value: "否" },
-      { label: "是", value: "是" }
+      { label: "否", value: "否", checked: false },
+      { label: "是", value: "是", checked: false }
     ]
   },
 
@@ -66,41 +74,53 @@ Page({
 
   // 意向项目选择
   onProjectChange(e) {
-    const { value } = e.detail;
+    console.log('onProjectChange event:', e);
+    const selectedValues = e.detail.value || [];
+    console.log('Selected values:', selectedValues);
+    
     this.setData({
-      'formData.projects': value
+      'formData.projects': selectedValues
     });
   },
 
   // 最高学历选择
   onEducationChange(e) {
+    const selectedValue = e.detail.value;
+    
     this.setData({
-      'formData.education': e.detail.value
+      'formData.education': selectedValue
     });
   },
 
   // 符合条件选择
   onConditionChange(e) {
-    const { value } = e.detail;
+    console.log('onConditionChange event:', e);
+    const selectedValues = e.detail.value || [];
+    console.log('Selected values:', selectedValues);
+    
     this.setData({
-      'formData.conditions': value
+      'formData.conditions': selectedValues
     });
   },
 
   // 英语成绩选择
   onEnglishLevelChange(e) {
+    const selectedValue = e.detail.value;
+    
     this.setData({
-      'formData.englishLevel': e.detail.value,
-      'formData.englishScore': ''
+      'formData.englishLevel': selectedValue,
     });
   },
 
   // 育儿经验选择
   onChildcareChange(e) {
+    const selectedValue = e.detail.value;
+    
     this.setData({
-      'formData.childcareExp': e.detail.value
+      'formData.childcareExp': selectedValue
     });
   },
+
 
   // 表单验证
   validateForm() {
@@ -124,11 +144,6 @@ Page({
       return false;
     }
 
-    // 其他项目
-    if (formData.projects.includes('其他') && !formData.otherProject) {
-      wx.showToast({ title: '请输入其他项目', icon: 'none' });
-      return false;
-    }
 
     // 最高学历
     if (!formData.education) {
@@ -177,6 +192,8 @@ Page({
 
   // 提交表单
   submitForm(e) {
+    console.log('Form data before validation:', this.data.formData);
+    
     if (!this.validateForm()) return;
 
     this.setData({ loading: true });
@@ -198,33 +215,54 @@ Page({
       contact: formData.contact
     };
 
+    console.log('Submit data:', submitData);
+
     // 提交表单
     app.wechatRequest('/contact', 'POST', submitData)
       .then(res => {
         wx.showToast({ title: '提交成功', icon: 'success' });
-        // 重置表单
-        this.setData({
-          formData: {
-            name: '',
-            birthday: '',
-            projects: [],
-            otherProject: '',
-            education: '',
-            conditions: [],
-            englishLevel: '',
-            englishScore: '',
-            childcareExp: '',
-            city: '',
-            contact: ''
-          }
-        });
+        console.log('Before reset formData:', this.data.formData);
+        
+        // 强制重置表单，先设置为null，再设置为初始值
+        this.resetForm();
       })
       .catch(err => {
         console.error('Failed to submit form:', err);
+
+        this.resetForm();
         wx.showToast({ title: '提交失败，请重试', icon: 'none' });
       })
       .finally(() => {
         this.setData({ loading: false });
       });
+  },
+  onReset() {
+    this.resetForm();
+  },
+  resetForm(){
+    this.setData({
+      formData: {
+        name: '',
+        birthday: '',
+        projects: [],
+        otherProject: '',
+        education: '',
+        conditions: [],
+        englishLevel: '',
+        englishScore: '',
+        childcareExp: '',
+        city: '',
+        contact: ''
+      },
+      intendedPrograms: this.data.intendedPrograms.map(item => ({ ...item, checked: false })),
+      conditions: this.data.conditions.map(item => ({ ...item, checked: false })),
+      educationLevels: this.data.educationLevels.map(item => ({ ...item, checked: false })),
+      englishLevels: this.data.englishLevels.map(item => ({ ...item, checked: false })),
+      childcareOptions: this.data.childcareOptions.map(item => ({ ...item, checked: false }))
+    }, () => {
+      // 重置完成后的回调，确保页面更新
+      console.log('After reset formData:', this.data.formData);
+      console.log('Form reset completed');
+    });
   }
 })

@@ -139,8 +139,8 @@ function setupNavigation() {
         case 'articles':
           loadArticles();
           break;
-        case 'contact-submissions':
-          loadContactSubmissions();
+        case 'contact':
+          loadContacts();
           break;
       }
     });
@@ -747,34 +747,94 @@ async function deleteItem(id, type) {
 
 
 
-// 加载联系表单提交
-async function loadContactSubmissions() {
+// 联系表单分页状态
+let contactPage = 1;
+const contactPageSize = 10;
+
+// 加载联系表单
+async function loadContacts(page = 1) {
   try {
-    const response = await fetch(`${apiBaseUrl}/contact`);
-    const submissions = await response.json();
+    const response = await fetch(`${apiBaseUrl}/contact?page=${page}&pageSize=${contactPageSize}`);
+    const result = await response.json();
+    const contacts = result.data.contacts || [];
+    const totalCount = result.data.total || 0;
     
-    const contactSubmissionsList = document.getElementById('contact-submissions-list');
-    contactSubmissionsList.innerHTML = '';
+    const contactBody = document.getElementById('contact-body');
+    contactBody.innerHTML = '';
     
-    submissions.forEach(submission => {
-      const card = document.createElement('div');
-      card.className = 'item-card';
-      card.innerHTML = `
-        <div class="item-info">
-          <div class="item-title">${submission.name}</div>
-          <div class="item-meta">
-            <div>生日: ${submission.birthday}</div>
-            <div>意向项目: ${submission.intended_programs}</div>
-            <div>最高学历: ${submission.highest_education}</div>
-            <div>提交时间: ${submission.created_at}</div>
-          </div>
-        </div>
-      `;
-      contactSubmissionsList.appendChild(card);
-    });
+    if (contacts.length === 0) {
+      contactBody.innerHTML = '<tr><td colspan="12" style="text-align: center; padding: 20px;">暂无数据</td></tr>';
+    } else {
+      contacts.forEach(contact => {
+        // 格式化日期
+        const formattedDate = contact.created_at ? new Date(contact.created_at).toLocaleString('zh-CN') : '';
+        
+        // 创建行
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${contact.id}</td>
+          <td>${contact.name}</td>
+          <td>${contact.birthday}</td>
+          <td>${contact.intended_programs || contact.projects}</td>
+          <td>${contact.highest_education || contact.education}</td>
+          <td>${contact.conditions}</td>
+          <td>${contact.english_level || contact.englishLevel}</td>
+          <td>${contact.english_score || contact.englishScore || ''}</td>
+          <td>${contact.childcare_exp || contact.childcareExp}</td>
+          <td>${contact.city}</td>
+          <td>${contact.contact}</td>
+          <td>${formattedDate}</td>
+        `;
+        contactBody.appendChild(row);
+      });
+    }
+    
+    // 生成分页
+    const totalPages = Math.ceil(totalCount / contactPageSize);
+    generateContactPagination('contact-pagination', page, totalPages);
+    contactPage = page;
   } catch (error) {
-    console.error('Error loading contact submissions:', error);
+    console.error('Error loading contacts:', error);
   }
+}
+
+// 生成联系表单分页
+function generateContactPagination(containerId, currentPage, totalPages) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  
+  // 上一页按钮
+  const prevButton = document.createElement('button');
+  prevButton.textContent = '上一页';
+  prevButton.disabled = currentPage === 1;
+  prevButton.onclick = () => {
+    if (currentPage > 1) {
+      loadContacts(currentPage - 1);
+    }
+  };
+  container.appendChild(prevButton);
+  
+  // 页码按钮
+  for (let i = 1; i <= totalPages; i++) {
+    const pageButton = document.createElement('button');
+    pageButton.textContent = i;
+    pageButton.className = currentPage === i ? 'active' : '';
+    pageButton.onclick = () => {
+      loadContacts(i);
+    };
+    container.appendChild(pageButton);
+  }
+  
+  // 下一页按钮
+  const nextButton = document.createElement('button');
+  nextButton.textContent = '下一页';
+  nextButton.disabled = currentPage === totalPages;
+  nextButton.onclick = () => {
+    if (currentPage < totalPages) {
+      loadContacts(currentPage + 1);
+    }
+  };
+  container.appendChild(nextButton);
 }
 
 // 创建项目卡片

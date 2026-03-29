@@ -87,32 +87,6 @@ Page({
       })
       .catch(err => {
         console.error('Failed to fetch case studies:', err);
-        // 使用默认数据
-        this.setData({
-          caseStudies: [
-            {
-              id: 1,
-              title: "案例分享 | 陕西妹子，电子信息工程专业...",
-              image_url: "https://via.placeholder.com/150x150?text=Case+1",
-              publish_date: "2026年3月6日",
-              view_count: 307
-            },
-            {
-              id: 2,
-              title: "案例分享 | 湖北妹子，物流管理专业，...",
-              image_url: "https://via.placeholder.com/150x150?text=Case+2",
-              publish_date: "2026年2月4日",
-              view_count: 199
-            },
-            {
-              id: 3,
-              title: "案例分享 | 湖南妹子，食品安全与工程...",
-              image_url: "https://via.placeholder.com/150x150?text=Case+3",
-              publish_date: "2026年1月15日",
-              view_count: 256
-            }
-          ]
-        });
       });
   },
 

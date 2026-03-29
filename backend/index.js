@@ -46,6 +46,9 @@ const contactSubmissionRouter = require('./api/contactSubmission');
 const adminRouter = require('./api/admin');
 const articlesRouter = require('./api/articles');
 
+// 微信小程序路由
+const wechatContactRouter = require('./wechat/contact');
+
 // 小程序专用接口（返回HTML内容）- 放在API路由之前
 const wechatArticleRouter = require('./wechat/article');
 app.use('/wechat/articles', wechatArticleRouter);
@@ -57,6 +60,9 @@ app.use('/api/qa-articles', qaArticleRouter);
 app.use('/api/contact', contactSubmissionRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/articles', articlesRouter);
+
+// 微信小程序路由
+app.use('/wechat', wechatContactRouter);
 
 // File upload endpoint
 app.post('/api/upload', upload.single('file'), (req, res) => {

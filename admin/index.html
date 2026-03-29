@@ -23,7 +23,7 @@
       <ul>
         <li><a href="#carousel" class="nav-link active" data-section="carousel">轮播图片管理</a></li>
         <li><a href="#articles" class="nav-link" data-section="articles">文章管理</a></li>
-        <li><a href="#contact-submissions" class="nav-link" data-section="contact-submissions">联系表单管理</a></li>
+        <li><a href="#contact" class="nav-link" data-section="contact">联系表单管理</a></li>
       </ul>
     </nav>
     
@@ -84,10 +84,31 @@
         </div>
       </section>
       
-      <section id="contact-submissions-section" class="section">
+      <section id="contact-section" class="section">
         <h2>联系表单管理</h2>
         <div class="section-content">
-          <div id="contact-submissions-list" class="item-list"></div>
+          <div class="table-container">
+            <table id="contact-table" class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>姓名</th>
+                  <th>生日</th>
+                  <th>意向项目</th>
+                  <th>最高学历</th>
+                  <th>符合条件</th>
+                  <th>英语水平</th>
+                  <th>英语成绩</th>
+                  <th>育儿经验</th>
+                  <th>所在城市</th>
+                  <th>联系方式</th>
+                  <th>提交时间</th>
+                </tr>
+              </thead>
+              <tbody id="contact-body"></tbody>
+            </table>
+            <div id="contact-pagination" class="pagination"></div>
+          </div>
         </div>
       </section>
     </main>

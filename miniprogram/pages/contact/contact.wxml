@@ -9,23 +9,25 @@
 
     <!-- 生日 -->
     <view class="form-item">
-      <picker mode="date" value="{{date}}" start="1900-01-01"  end="{{currentDate}}" bindchange="onBirthdayChange">
-    <view class="picker">
-      生日: {{formData.birthday || '请选择'}}
-    </view>
-  </picker>
+      <text class="form-label">生日</text>
+      <picker mode="date" start="1900-01-01" end="{{currentDate}}" value="{{formData.birthday}}" bindchange="onBirthdayChange" class="form-picker">
+        <view class="form-picker-content">
+          <view class="form-picker-view">{{formData.birthday || '请选择'}}</view>
+          <view class="form-picker-arrow">▼</view>
+        </view>
+      </picker>
     </view>
     
 
     <!-- 意向项目 -->
     <view class="form-item">
       <text class="form-label">意向项目</text>
-      <view class="checkbox-group">
+      <checkbox-group bindchange="onProjectChange" value="{{selectedIntendedPrograms}}">
         <label class="checkbox-item" wx:for="{{intendedPrograms}}" wx:key="value">
-          <checkbox value="{{item.value}}" name="projects" bindchange="onProjectChange" checked="{{formData.projects.includes(item.value)}}" />
+          <checkbox value="{{item.value}}" checked="{{item.checked}}"/>
           <text>{{item.label}}</text>
         </label>
-      </view>
+      </checkbox-group>
       <!-- 其他项目输入框 -->
       <view wx:if="{{formData.projects.includes('其他')}}" class="form-item">
         <input type="text" name="otherProject" placeholder="请输入其他项目" class="form-input" value="{{formData.otherProject}}" bindinput="onInput" data-field="otherProject" />
@@ -35,49 +37,49 @@
     <!-- 最高学历 -->
     <view class="form-item">
       <text class="form-label">最高学历</text>
-      <view class="radio-group">
+      <radio-group class="radio-group" bindchange="onEducationChange">
         <label class="radio-item" wx:for="{{educationLevels}}" wx:key="value">
-          <radio value="{{item.value}}" name="education" bindchange="onEducationChange" />
+          <radio value="{{item.value}}" checked="{{item.checked}}" />
           <text>{{item.label}}</text>
         </label>
-      </view>
+      </radio-group>
     </view>
 
     <!-- 符合条件 -->
     <view class="form-item">
       <text class="form-label">请勾选复合条件的选项</text>
-      <view class="checkbox-group">
+      <checkbox-group bindchange="onConditionChange">
         <label class="checkbox-item" wx:for="{{conditions}}" wx:key="value">
-          <checkbox value="{{item.value}}" name="conditions" bindchange="onConditionChange" checked="{{formData.conditions.includes(item.value)}}" />
+          <checkbox value="{{item.value}}" checked="{{item.checked}}" />
           <text>{{item.label}}</text>
         </label>
-      </view>
+      </checkbox-group>
     </view>
 
     <!-- 英语成绩 -->
     <view class="form-item">
       <text class="form-label">英语成绩</text>
-      <view class="radio-group">
+      <radio-group class="radio-group" bindchange="onEnglishLevelChange">
         <label class="radio-item" wx:for="{{englishLevels}}" wx:key="value">
-          <radio value="{{item.value}}" name="englishLevel" bindchange="onEnglishLevelChange" />
+          <radio value="{{item.value}}" checked="{{item.checked}}" />
           <text>{{item.label}}</text>
         </label>
-      </view>
+      </radio-group>
       <!-- 语言成绩输入框 -->
       <view wx:if="{{formData.englishLevel === '有语言成绩'}}" class="form-item">
-        <input type="text" name="englishScore" placeholder="请输入语言成绩" class="form-input" value="{{formData.englishScore}}" bindinput="onInput" data-field="englishScore" />
+        <input type="text" name="englishScore" placeholder="如四级 520分" class="form-input" value="{{formData.englishScore}}" bindinput="onInput" data-field="englishScore" />
       </view>
     </view>
 
     <!-- 育儿经验 -->
     <view class="form-item">
       <text class="form-label">是否有非亲属育儿经验</text>
-      <view class="radio-group">
+      <radio-group class="radio-group" bindchange="onChildcareChange">
         <label class="radio-item" wx:for="{{childcareOptions}}" wx:key="value">
-          <radio value="{{item.value}}" name="childcareExp" bindchange="onChildcareChange" />
+          <radio value="{{item.value}}" checked="{{item.checked}}" />
           <text>{{item.label}}</text>
         </label>
-      </view>
+      </radio-group>
     </view>
 
     <!-- 所在城市 -->
