@@ -45,7 +45,7 @@ form {
 }
 
 .form-input:focus {
-  border-color: #1E88E5;
+  border-color: #e81353;
   box-shadow: 0 0 0 2rpx rgba(30, 136, 229, 0.2);
 }
 
@@ -134,7 +134,7 @@ form {
 .submit-button {
   width: 100%;
   height: 80rpx;
-  background-color: #1E88E5;
+  background-color: #e81353;
   color: #ffffff;
   font-size: 30rpx;
   font-weight: bold;
@@ -162,7 +162,7 @@ form {
 }
 
 .submit-button:hover {
-  background-color: #1976D2;
+  background-color: #c40f46;
   box-shadow: 0 4rpx 12rpx rgba(30, 136, 229, 0.4);
   transform: translateY(-2rpx);
 }
@@ -172,7 +172,7 @@ form {
 }
 
 .submit-button[loading] {
-  background-color: #64B5F6;
+  background-color: #f8a0b9;
 }
 
 /* 自定义checkbox样式 */
@@ -186,8 +186,8 @@ checkbox .wx-checkbox-input {
 }
 
 checkbox .wx-checkbox-input.wx-checkbox-input-checked {
-  background-color: #1E88E5;
-  border-color: #1E88E5;
+  background-color: #e81353;
+  border-color: #e81353;
 }
 
 checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
@@ -213,7 +213,7 @@ radio .wx-radio-input {
 }
 
 radio .wx-radio-input.wx-radio-input-checked {
-  border-color: #1E88E5;
+  border-color: #e81353;
   background: #ffffff;
 }
 
@@ -223,8 +223,8 @@ radio .wx-radio-input.wx-radio-input-checked::before {
   line-height: 20rpx;
   text-align: center;
   font-size: 18rpx;
-  color: #1E88E5;
-  background: #1E88E5;
+  color: #e81353;
+  background: #e81353;
   transform: translate(-50%, -50%) scale(1);
   -webkit-transform: translate(-50%, -50%) scale(1);
   border-radius: 50%;

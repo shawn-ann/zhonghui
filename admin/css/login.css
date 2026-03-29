@@ -47,7 +47,7 @@ input {
 
 .login-button {
   width: 100%;
-  background-color: #1E88E5;
+  background-color: #e81353;
   color: #ffffff;
   border: none;
   padding: 12px;
@@ -58,7 +58,7 @@ input {
 }
 
 .login-button:hover {
-  background-color: #1976D2;
+  background-color: #c40f46;
 }
 
 .error-message {

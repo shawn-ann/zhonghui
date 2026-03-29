@@ -13,7 +13,7 @@ body {
 }
 
 .admin-header {
-  background-color: #1E88E5;
+  background-color: #e81353;
   color: #ffffff;
   padding: 20px;
   display: flex;
@@ -28,7 +28,7 @@ body {
 
 .logout-button {
   background-color: #ffffff;
-  color: #1E88E5;
+  color: #e81353;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
@@ -69,8 +69,8 @@ body {
 }
 
 .nav-link.active {
-  border-bottom-color: #1E88E5;
-  color: #1E88E5;
+  border-bottom-color: #e81353;
+  color: #e81353;
 }
 
 .admin-content {
@@ -99,7 +99,7 @@ body {
 }
 
 .add-button {
-  background-color: #1E88E5;
+  background-color: #e81353;
   color: #ffffff;
   border: none;
   padding: 10px 20px;
@@ -110,7 +110,7 @@ body {
 }
 
 .add-button:hover {
-  background-color: #1976D2;
+  background-color: #c40f46;
 }
 
 /* 搜索栏样式 */
@@ -137,11 +137,11 @@ body {
 
 .search-bar input:focus {
   outline: none;
-  border-color: #1E88E5;
+  border-color: #e81353;
 }
 
 .search-button {
-  background-color: #1E88E5;
+  background-color: #e81353;
   color: #ffffff;
   border: none;
   padding: 8px 16px;
@@ -151,7 +151,7 @@ body {
 }
 
 .search-button:hover {
-  background-color: #1976D2;
+  background-color: #c40f46;
 }
 
 .reset-button {
@@ -243,9 +243,9 @@ body {
 }
 
 .pagination button.active {
-  background-color: #1E88E5;
+  background-color: #e81353;
   color: white;
-  border-color: #1E88E5;
+  border-color: #e81353;
 }
 
 .pagination button:disabled {
@@ -464,12 +464,12 @@ body {
 }
 
 .save-button {
-  background-color: #1E88E5;
+  background-color: #e81353;
   color: #ffffff;
 }
 
 .save-button:hover {
-  background-color: #1976D2;
+  background-color: #c40f46;
 }
 
 .cancel-button {
@@ -494,6 +494,6 @@ body {
   
   .nav-link.active {
     border-bottom-color: transparent;
-    border-left-color: #1E88E5;
+    border-left-color: #e81353;
   }
 }
