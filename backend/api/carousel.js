@@ -3,6 +3,26 @@ const router = express.Router();
 const pool = require('../config/db');
 const CarouselModel = require('../models/carousel');
 
+// Get a single carousel image by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [rows] = await pool.execute(
+      'SELECT * FROM carousel_images WHERE id = ?',
+      [id]
+    );
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Carousel image not found' });
+    }
+    
+    res.json(rows[0]);
+  } catch (error) {
+    console.error('Error getting carousel image:', error);
+    res.status(500).json({ error: 'Failed to get carousel image', details: error.message });
+  }
+});
+
 // Get all carousel images with pagination
 router.get('/', async (req, res) => {
   try {

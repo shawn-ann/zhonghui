@@ -35,8 +35,14 @@ if (!fs.existsSync(uploadDir)) {
 // Serve static files from upload directory
 app.use('/uploads', express.static(uploadDir));
 
-// Serve static files from admin directory
-app.use('/admin', express.static(path.join(__dirname, '../admin')));
+// Serve static files from admin directory (React build output)
+app.use('/admin', express.static(path.join(__dirname, '../admin/dist')));
+app.use('/admin', express.static(path.join(__dirname, '../admin/dist/assets')));
+
+// SPA fallback - 让 React Router 处理路由
+app.get('/admin/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../admin/dist/index.html'));
+});
 
 // API routes
 const carouselRouter = require('./api/carousel');
