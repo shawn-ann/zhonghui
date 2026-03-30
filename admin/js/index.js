@@ -185,11 +185,13 @@ function setupModal() {
       isValid = false;
     }
     
-    // 验证内容
-    const content = formData.get('content');
-    if (!content || content.trim() === '') {
-      document.getElementById('content-error').textContent = '内容不能为空';
-      isValid = false;
+    // 验证内容（仅文章类型）
+    if (window.currentItemType === 'articles') {
+      const content = formData.get('content');
+      if (!content || content.trim() === '') {
+        document.getElementById('content-error').textContent = '内容不能为空';
+        isValid = false;
+      }
     }
     
     // 验证图片（新建时必填，编辑时可选）
@@ -234,7 +236,6 @@ function setupModal() {
         // 轮播图字段
         data.title = title;
         data.order_num = formData.get('orderNum');
-        data.content = content;
       } else if (window.currentItemType === 'articles') {
         // 文章字段
         data.title = title;
@@ -374,15 +375,18 @@ function openModal(title, type, item = null) {
   // 根据类型显示或隐藏不同的字段
   const orderNumGroup = document.getElementById('order-num-group');
   const articleTypeGroup = document.getElementById('article-type-group');
+  const contentGroup = document.getElementById('content-group');
   
   if (type === 'carousel') {
-    // 轮播图显示排序字段
+    // 轮播图显示排序字段，隐藏内容字段
     orderNumGroup.style.display = 'block';
     articleTypeGroup.style.display = 'none';
+    contentGroup.style.display = 'none';
   } else if (type === 'articles') {
-    // 文章隐藏排序字段，显示文章类型字段
+    // 文章隐藏排序字段，显示文章类型字段和内容字段
     orderNumGroup.style.display = 'none';
     articleTypeGroup.style.display = 'block';
+    contentGroup.style.display = 'block';
   }
   
   // 填充表单数据（如果是编辑）
@@ -397,24 +401,26 @@ function openModal(title, type, item = null) {
       document.getElementById('article-type').value = item.article_type;
     }
     
-    // 设置富文本编辑器内容
-    if (item.content) {
-      if (editorInstance) {
-        try {
-          // 尝试解析为 Quill Delta 格式
-          const delta = JSON.parse(item.content);
-          editorInstance.setContents(delta);
-        } catch (e) {
-          // 如果不是 JSON 格式，则作为 HTML 文本设置
-          editorInstance.setText(item.content);
+    // 设置富文本编辑器内容（仅文章类型）
+    if (type === 'articles') {
+      if (item.content) {
+        if (editorInstance) {
+          try {
+            // 尝试解析为 Quill Delta 格式
+            const delta = JSON.parse(item.content);
+            editorInstance.setContents(delta);
+          } catch (e) {
+            // 如果不是 JSON 格式，则作为 HTML 文本设置
+            editorInstance.setText(item.content);
+          }
         }
+        document.getElementById('content').value = item.content;
+      } else {
+        if (editorInstance) {
+          editorInstance.setContents([]);
+        }
+        document.getElementById('content').value = '';
       }
-      document.getElementById('content').value = item.content;
-    } else {
-      if (editorInstance) {
-        editorInstance.setContents([]);
-      }
-      document.getElementById('content').value = '';
     }
 
     // 显示图片预览
@@ -431,11 +437,11 @@ function openModal(title, type, item = null) {
     if (type === 'articles') {
       // 新建文章时默认选择案例分享
       document.getElementById('article-type').value = 'case';
+      if (editorInstance) {
+        editorInstance.setContents([]);
+      }
+      document.getElementById('content').value = '';
     }
-    if (editorInstance) {
-      editorInstance.setContents([]);
-    }
-    document.getElementById('content').value = '';
 
     // 清空图片预览
     document.getElementById('image-preview').innerHTML = '';

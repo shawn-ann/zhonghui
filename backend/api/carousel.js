@@ -41,8 +41,8 @@ router.get('/', async (req, res) => {
 // Create a new carousel image
 router.post('/', async (req, res) => {
   try {
-    const { image_url: imageUrl, title, order_num: orderNum, content } = req.body;
-    const id = await CarouselModel.create(imageUrl, title, orderNum, content);
+    const { image_url: imageUrl, title, order_num: orderNum } = req.body;
+    const id = await CarouselModel.create(imageUrl, title, orderNum);
     res.status(201).json({ id });
   } catch (error) {
     console.error('Error creating carousel image:', error);
@@ -54,8 +54,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { image_url: imageUrl, title, order_num: orderNum, content } = req.body;
-    await CarouselModel.update(id, imageUrl, title, orderNum, content);
+    const { image_url: imageUrl, title, order_num: orderNum } = req.body;
+    await CarouselModel.update(id, imageUrl, title, orderNum);
     res.json({ success: true });
   } catch (error) {
     console.error('Error updating carousel image:', error);
