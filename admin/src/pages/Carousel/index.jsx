@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { carouselApi } from '../../services/api'
 import Pagination from '../../components/Pagination'
+import { getImageUrl } from '../../utils/config'
 
 export default function Carousel() {
   const [data, setData] = useState([])
@@ -78,7 +79,7 @@ export default function Carousel() {
                   <td className="py-3 px-4">
                     {item.image_url && (
                       <img
-                        src={`http://localhost:3000${item.image_url}`}
+                        src={getImageUrl(item.image_url)}
                         alt={item.title}
                         className="w-24 h-14 object-cover rounded"
                       />

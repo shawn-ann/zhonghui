@@ -13,6 +13,14 @@ class AdminUserModel {
     );
     return result.insertId;
   }
+
+  static async updatePassword(username, newPassword) {
+    const [result] = await pool.execute(
+      'UPDATE admin_users SET password = ? WHERE username = ?',
+      [newPassword, username]
+    );
+    return result.affectedRows;
+  }
 }
 
 module.exports = AdminUserModel;

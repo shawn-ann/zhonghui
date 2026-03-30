@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { carouselApi, uploadApi } from '../../services/api'
+import { getImageUrl } from '../../utils/config'
 
 export default function CarouselForm() {
   const navigate = useNavigate()
@@ -28,7 +29,7 @@ export default function CarouselForm() {
         image_url: item.image_url || '',
       })
       if (item.image_url) {
-        setImagePreview(`http://localhost:3000${item.image_url}`)
+        setImagePreview(getImageUrl(item.image_url))
       }
     } catch (error) {
       console.error('获取数据失败:', error)

@@ -35,6 +35,7 @@ export const contactApi = {
 // 管理员 API
 export const adminApi = {
   login: (data) => api.post('/admin/login', data),
+  changePassword: (data) => api.put('/admin/password', data),
 }
 
 // 文件上传

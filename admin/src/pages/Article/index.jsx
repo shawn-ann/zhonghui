@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { articleApi } from '../../services/api'
 import Pagination from '../../components/Pagination'
+import { getImageUrl } from '../../utils/config'
 
 export default function Article() {
   const [data, setData] = useState([])
@@ -144,7 +145,7 @@ export default function Article() {
                   <td className="py-3 px-4">
                     {item.image_url && (
                       <img
-                        src={`http://localhost:3000${item.image_url}`}
+                        src={getImageUrl(item.image_url)}
                         alt={item.title}
                         className="w-20 h-12 object-cover rounded"
                       />
