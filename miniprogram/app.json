@@ -21,7 +21,7 @@
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "回到首页",
+        "text": "首页",
         "iconPath": "images/icon/shouye-zhihui.png",
         "selectedIconPath": "images/icon/shouye-zhihui.png"
       },
