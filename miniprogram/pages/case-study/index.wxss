@@ -6,6 +6,24 @@
 }
 
 
+/* 案例列表 */
+.case-list {
+  background-color: #ffffff;
+  margin: 20rpx 0;
+  border-radius: 10rpx;
+  padding: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20rpx;
+  border-left: 5rpx solid #e81353;
+  padding-left: 15rpx;
+}
+
+
 
 
 

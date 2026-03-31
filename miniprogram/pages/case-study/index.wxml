@@ -3,6 +3,7 @@
   
   <!-- 文章列表 -->
   <view class="case-list">
+    <view class="section-title">案例分享</view>
     <view class="case-item" wx:for="{{caseStudies}}" wx:key="id" bindtap="navigateToDetail" data-id="{{item.id}}" data-type="{{item.article_type}}">
       <view class="case-content">
         <text class="case-title">{{item.title}}</text>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理后台</title>
+  <link rel="stylesheet" href="css/index.css">
+  <!-- Quill.js CSS -->
+  <link href="node_modules/quill/dist/quill.snow.css" rel="stylesheet">
+  <!-- Quill.js -->
+  <script src="node_modules/quill/dist/quill.min.js"></script>
+</head>
+<body>
+  <div class="admin-container">
+    <header class="admin-header">
+      <h1>管理后台</h1>
+      <div class="header-actions">
+        <button id="logout-button" class="logout-button">退出登录</button>
+      </div>
+    </header>
+    
+    <nav class="admin-nav">
+      <ul>
+        <li><a href="#carousel" class="nav-link active" data-section="carousel">轮播图片管理</a></li>
+        <li><a href="#articles" class="nav-link" data-section="articles">文章管理</a></li>
+        <li><a href="#contact" class="nav-link" data-section="contact">联系表单管理</a></li>
+      </ul>
+    </nav>
+    
+    <main class="admin-content">
+      <section id="carousel-section" class="section active">
+        <h2>轮播图片管理</h2>
+        <div class="section-content">
+          <button id="add-carousel" class="add-button">添加轮播图片</button>
+          <div class="table-container">
+            <table id="carousel-table" class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>图片</th>
+                  <th>标题</th>
+                  <th>排序</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="carousel-body"></tbody>
+            </table>
+            <div id="carousel-pagination" class="pagination"></div>
+          </div>
+        </div>
+      </section>
+      
+      <section id="articles-section" class="section">
+        <h2>文章管理</h2>
+        <div class="section-content">
+          <div class="search-bar">
+            <select id="article-type-filter" class="article-type-select">
+              <option value="">全部类型</option>
+              <option value="case">案例分享</option>
+              <option value="qa">问答文章</option>
+            </select>
+            <input type="text" id="article-search" placeholder="搜索标题关键字...">
+            <button id="article-search-btn" class="search-button">搜索</button>
+            <button id="article-reset-btn" class="reset-button">重置</button>
+          </div>
+          <button id="add-article" class="add-button">添加文章</button>
+          <div class="table-container">
+            <table id="articles-table" class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>图片</th>
+                  <th>标题</th>
+                  <th>文章类型</th>
+                  <th>发布日期</th>
+                  <th>浏览次数</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="articles-body"></tbody>
+            </table>
+            <div id="articles-pagination" class="pagination"></div>
+          </div>
+        </div>
+      </section>
+      
+      <section id="contact-section" class="section">
+        <h2>联系表单管理</h2>
+        <div class="section-content">
+          <div class="table-container">
+            <table id="contact-table" class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>姓名</th>
+                  <th>生日</th>
+                  <th>意向项目</th>
+                  <th>最高学历</th>
+                  <th>符合条件</th>
+                  <th>英语水平</th>
+                  <th>英语成绩</th>
+                  <th>育儿经验</th>
+                  <th>所在城市</th>
+                  <th>联系方式</th>
+                  <th>提交时间</th>
+                </tr>
+              </thead>
+              <tbody id="contact-body"></tbody>
+            </table>
+            <div id="contact-pagination" class="pagination"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <!-- 模态框 -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">添加轮播图片</h3>
+        <button id="close-modal" class="close-button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="modal-form">
+          <div class="form-group">
+            <label for="image-upload">上传图片 <span class="required">*</span></label>
+            <input type="file" id="image-upload" name="image" accept="image/*">
+            <div id="image-preview" class="image-preview"></div>
+            <div id="image-error" class="error-message"></div>
+          </div>
+          <div class="form-group">
+            <label for="title">标题 <span class="required">*</span></label>
+            <input type="text" id="title" name="title">
+            <div id="title-error" class="error-message"></div>
+          </div>
+          <div class="form-group" id="article-type-group" style="display: none;">
+            <label for="article-type">文章类型 <span class="required">*</span></label>
+            <select id="article-type" name="articleType">
+              <option value="case">案例分享</option>
+              <option value="qa">问答文章</option>
+            </select>
+          </div>
+          <div class="form-group" id="order-num-group">
+            <label for="order-num">排序</label>
+            <input type="number" id="order-num" name="orderNum" value="0" min="0">
+          </div>
+          <div class="form-group" id="content-group">
+            <label for="content">内容 <span class="required">*</span></label>
+            <div id="editor"></div>
+            <input type="hidden" id="content" name="content">
+            <div id="content-error" class="error-message"></div>
+          </div>
+          <div class="form-group" id="publish-date-group" style="display: none;">
+            <label for="publish-date">发布日期</label>
+            <input type="date" id="publish-date" name="publishDate">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="save-button">保存</button>
+            <button type="button" id="cancel-button" class="cancel-button">取消</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script src="js/index.js"></script>
+</body>
+</html>

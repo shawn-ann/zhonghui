@@ -8,11 +8,21 @@
 
 本项目是一个中汇企业官网系统，包含以下三个部分：
 
-| 模块 | 目录 | 技术栈 | 端口 |
-|------|------|--------|------|
-| 后端服务 | `/backend` | Express.js + MySQL | 3000 |
-| 管理后台 | `/admin` | 原生 HTML + JS | - |
+| 模块 | 目录 | 技术栈 | 外部访问路径 |
+|------|------|--------|--------------|
+| 后端服务 | `/backend` | Express.js + MySQL | https://www.chinaaupairs.com/miniprogram/api |
+| 管理后台 | `/admin` | React + Vite | https://www.chinaaupairs.com/miniprogram/admin |
 | 微信小程序 | `/miniprogram` | 微信小程序框架 | - |
+
+### 1.1 URL 架构说明
+
+系统部署在 `/miniprogram/` 子路径下，Nginx 负责路径转发：
+
+| 外部访问路径 | 内部转发路径 | 说明 |
+|--------------|--------------|------|
+| `/miniprogram/api/*` | `/api/*` | 后端 API |
+| `/miniprogram/admin/*` | `/admin/*` | 管理后台（React 静态文件） |
+| `/miniprogram/uploads/*` | `/uploads/*` | 上传文件 |
 
 ---
 
@@ -42,10 +52,26 @@ npm start
 
 ### 2.2 管理后台 (admin)
 
-管理后台为静态文件，无需构建，直接通过后端服务访问：
+管理后台为 React + Vite 应用，需要构建后部署：
 
+```bash
+# 进入管理后台目录
+cd admin
+
+# 安装依赖
+npm install
+
+# 开发环境
+npm run dev
+
+# 生产环境构建
+npm run build
+```
+
+构建后的文件在 `dist` 目录，由后端服务托管：
 - 访问地址: `http://localhost:3000/admin`
-- 登录页面: `http://localhost:3000/admin/login.html`
+- 登录页面: `http://localhost:3000/admin/#/login`
+- 生产访问: `https://www.chinaaupairs.com/miniprogram/admin`
 
 ### 2.3 微信小程序 (miniprogram)
 

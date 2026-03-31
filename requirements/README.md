@@ -16,9 +16,29 @@
 
 | 模块 | 技术栈 | 访问地址 |
 |------|--------|----------|
-| 后端服务 | Express.js + MySQL | http://localhost:3000 |
-| 管理后台 | 原生 HTML + JS | http://localhost:3000/admin |
+| 后端服务 | Express.js + MySQL | https://www.chinaaupairs.com |
+| 管理后台 | React + Vite | https://www.chinaaupairs.com/miniprogram/admin |
 | 微信小程序 | 微信小程序框架 | 微信开发者工具 |
+
+### 1.3 系统架构图
+
+```
+用户浏览器/微信小程序
+        │
+        ▼
+   HTTPS (443) ────────────────────┐
+        │                          │
+        ▼                          │
+   Nginx (HTTPS + SSL)            │
+        │                          │
+        ├─ /miniprogram/api/* ────┼──► 后端 API (Express.js :3000)
+        ├─ /miniprogram/admin/* ──┼──► 管理后台静态文件
+        ├─ /miniprogram/uploads/*─┼──► 上传文件
+        └─ /index.php/* ───────────┘──► PHP 应用
+              │
+              ▼
+         MySQL 数据库
+```
 
 ---
 
@@ -30,7 +50,7 @@
 管理员通过用户名和密码登录管理后台。
 
 #### 场景操作步骤
-1. 打开浏览器，访问管理后台登录页面 `http://localhost:3000/admin/login.html`
+1. 打开浏览器，访问管理后台登录页面 `https://www.chinaaupairs.com/miniprogram/admin/#/login`
 2. 在用户名输入框中输入管理员用户名
 3. 在密码输入框中输入管理员密码
 4. 点击「登录」按钮
@@ -400,35 +420,35 @@
 ### 5.1 轮播图接口
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | /api/carousel | 获取轮播图列表（分页） |
-| POST | /api/carousel | 创建轮播图 |
-| PUT | /api/carousel/:id | 更新轮播图 |
-| DELETE | /api/carousel/:id | 删除轮播图 |
+| GET | /miniprogram/api/carousel | 获取轮播图列表（分页） |
+| POST | /miniprogram/api/carousel | 创建轮播图 |
+| PUT | /miniprogram/api/carousel/:id | 更新轮播图 |
+| DELETE | /miniprogram/api/carousel/:id | 删除轮播图 |
 
 ### 5.2 文章接口
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | /api/articles | 获取文章列表（分页、搜索、筛选） |
-| GET | /api/articles/:id | 获取文章详情 |
-| POST | /api/articles | 创建文章 |
-| PUT | /api/articles/:id | 更新文章 |
-| DELETE | /api/articles/:id | 删除文章 |
+| GET | /miniprogram/api/articles | 获取文章列表（分页、搜索、筛选） |
+| GET | /miniprogram/api/articles/:id | 获取文章详情 |
+| POST | /miniprogram/api/articles | 创建文章 |
+| PUT | /miniprogram/api/articles/:id | 更新文章 |
+| DELETE | /miniprogram/api/articles/:id | 删除文章 |
 
 ### 5.3 联系表单接口
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | /api/contact | 获取联系表单列表（分页） |
-| POST | /api/contact | 提交联系表单 |
+| GET | /miniprogram/api/contact | 获取联系表单列表（分页） |
+| POST | /miniprogram/api/contact | 提交联系表单 |
 
 ### 5.4 管理员接口
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| POST | /api/admin/login | 管理员登录 |
+| POST | /miniprogram/api/admin/login | 管理员登录 |
 
 ### 5.5 文件上传接口
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| POST | /api/upload | 上传文件 |
+| POST | /miniprogram/api/upload | 上传文件 |
 
 ---
 
@@ -446,6 +466,18 @@
 - 管理员登录需要验证用户名和密码
 - 敏感信息（如密码）不在客户端存储
 - API 接口使用参数化查询防止 SQL 注入
+
+### 6.4 URL 架构说明
+
+由于系统部署在 `/miniprogram/` 子路径下，所有外部访问路径均使用 `https://www.chinaaupairs.com/miniprogram/...` 前缀：
+
+| 服务 | 外部访问路径 | 内部转发路径 |
+|------|--------------|--------------|
+| 管理后台 | https://www.chinaaupairs.com/miniprogram/admin/* | /admin/* |
+| 后端 API | https://www.chinaaupairs.com/miniprogram/api/* | /api/* |
+| 上传文件 | https://www.chinaaupairs.com/miniprogram/uploads/* | /uploads/* |
+
+Nginx 负责将外部请求的 `/miniprogram/*` 路径内部转发到对应的后端路径，浏览器地址栏保持不变。
 
 ---
 

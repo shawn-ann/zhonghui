@@ -5,8 +5,8 @@ App({
     console.log('小程序启动');
   },
   globalData: {
-    apiBaseUrl: 'http://localhost:3000/api',
-    wechatApiBaseUrl: 'http://localhost:3000/wechat',
+    apiBaseUrl: 'https://www.chinaaupairs.com/miniprogram/api',
+    wechatApiBaseUrl: 'https://www.chinaaupairs.com/miniprogram/wechat',
     userInfo: null
   },
   // 封装网络请求
