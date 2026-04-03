@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { articleApi, uploadApi } from '../../services/api'
 import QuillEditor from '../../components/QuillEditor'
-import { getImageUrl } from '../../utils/config'
 
 export default function ArticleForm() {
   const navigate = useNavigate()
@@ -34,7 +33,7 @@ export default function ArticleForm() {
         publish_date: item.publish_date || '',
       })
       if (item.image_url) {
-        setImagePreview(getImageUrl(item.image_url))
+        setImagePreview(item.image_url)
       }
     } catch (error) {
       console.error('获取数据失败:', error)

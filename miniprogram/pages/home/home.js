@@ -22,7 +22,7 @@ Page({
       .then(res => {
         const menus = (res || []).map(item => ({
           ...item,
-          icon: item.icon_url ? app.globalData.apiBaseUrl.replace('/api', '') + item.icon_url : '/images/icon/car1.png'
+          icon: item.icon_url || '/images/icon/car1.png'
         }));
         this.setData({
           submenus: menus
@@ -56,13 +56,8 @@ Page({
       .then(res => {
         // 处理返回的数据结构
         const carouselData = res.data || [];
-        // 将相对路径转换为完整的 URL
-        const carouselImages = carouselData.map(item => ({
-          ...item,
-          image_url: app.globalData.apiBaseUrl.replace('/api', '') + item.image_url
-        }));
         this.setData({
-          carouselImages: carouselImages
+          carouselImages: carouselData
         });
       })
       .catch(err => {
@@ -96,7 +91,7 @@ Page({
           
           return {
             ...item,
-            image_url: item.image_url ? app.globalData.apiBaseUrl.replace('/api', '') + item.image_url : '',
+            image_url: item.image_url || '',
             publish_date: formattedDate
           };
         });

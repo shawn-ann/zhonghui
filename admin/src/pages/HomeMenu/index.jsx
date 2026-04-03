@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { homeMenuApi } from '../../services/api'
-import { getImageUrl } from '../../utils/config'
 
 export default function HomeMenu() {
   const [data, setData] = useState([])
@@ -67,7 +66,7 @@ export default function HomeMenu() {
                 <td className="py-3 px-2">
                   {item.icon_url && (
                     <img
-                      src={getImageUrl(item.icon_url)}
+                      src={item.icon_url}
                       alt={item.title}
                       className="w-12 h-12 object-cover rounded"
                     />

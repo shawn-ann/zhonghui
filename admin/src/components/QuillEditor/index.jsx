@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
 import { uploadApi } from '../../services/api'
-import { getImageUrl } from '../../utils/config'
 
 export default function QuillEditor({ value, onChange }) {
   const editorRef = useRef(null)
@@ -97,7 +96,7 @@ export default function QuillEditor({ value, onChange }) {
         try {
           setIsUploading(true)
           const response = await uploadApi.upload(file)
-          const imageUrl = getImageUrl(response.data.url)
+          const imageUrl = response.data.url
           insertImageToEditor(imageUrl)
         } catch (error) {
           console.error('图片上传失败:', error)

@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { homeMenuApi, uploadApi } from '../../services/api'
 import QuillEditor from '../../components/QuillEditor'
-import { getImageUrl } from '../../utils/config'
 
 export default function HomeMenuForm() {
   const navigate = useNavigate()
@@ -32,7 +31,7 @@ export default function HomeMenuForm() {
         order_num: item.order_num || 0,
       })
       if (item.icon_url) {
-        setIconPreview(getImageUrl(item.icon_url))
+        setIconPreview(item.icon_url)
       }
     } catch (error) {
       console.error('获取数据失败:', error)

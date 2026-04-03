@@ -28,10 +28,7 @@ Page({
         }
         
         // 处理图片 URL
-        let imageUrl = res.image_url;
-        if (imageUrl && imageUrl.startsWith('/')) {
-          imageUrl = app.globalData.apiBaseUrl.replace('/api', '') + imageUrl;
-        }
+        let imageUrl = res.image_url || '';
         
         this.setData({
           article: {

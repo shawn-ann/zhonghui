@@ -3,11 +3,5 @@
   <view wx:if="{{loading}}" class="loading-container">
     <text class="loading-text">加载中...</text>
   </view>
-  
-  <!-- 菜单详情 -->
-  <view wx:else class="menu-detail">
-    <view class="menu-content">
-      <mp-html content="{{menu.content}}" img-mode="aspectFit"></mp-html>
-    </view>
-  </view>
+  <mp-html wx:else content="{{menu.content}}" img-mode="aspectFit"></mp-html>
 </view>

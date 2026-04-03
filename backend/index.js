@@ -60,6 +60,10 @@ const wechatContactRouter = require('./wechat/contact');
 const wechatArticleRouter = require('./wechat/article');
 app.use('/wechat/articles', wechatArticleRouter);
 
+// 小程序专用：首页菜单详情（返回HTML内容）
+const wechatHomeMenuRouter = require('./wechat/homeMenu');
+app.use('/wechat/home-menus', wechatHomeMenuRouter);
+
 // API routes
 app.use('/api/carousel', carouselRouter);
 app.use('/api/case-studies', caseStudyRouter);
@@ -77,7 +81,11 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-  res.json({ url: `/uploads/${req.file.filename}` });
+  // 获取服务器域名，返回完整 URL（包含 /miniprogram 前缀）
+  const protocol = req.get('X-Forwarded-Proto') || 'https';
+  const host = req.get('Host') || req.headers.host;
+  const fullUrl = `${protocol}://${host}/miniprogram/uploads/${req.file.filename}`;
+  res.json({ url: fullUrl });
 });
 
 // Health check endpoint

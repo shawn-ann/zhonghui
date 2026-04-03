@@ -45,7 +45,7 @@ Page({
           
           return {
             ...item,
-            image_url: item.image_url ? app.globalData.apiBaseUrl.replace('/api', '') + item.image_url : '',
+            image_url: item.image_url || '',
             publish_date: formattedDate
           };
         });
