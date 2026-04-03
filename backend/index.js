@@ -51,6 +51,7 @@ const qaArticleRouter = require('./api/qaArticle');
 const contactSubmissionRouter = require('./api/contactSubmission');
 const adminRouter = require('./api/admin');
 const articlesRouter = require('./api/articles');
+const homeMenuRouter = require('./api/homeMenu');
 
 // 微信小程序路由
 const wechatContactRouter = require('./wechat/contact');
@@ -66,6 +67,7 @@ app.use('/api/qa-articles', qaArticleRouter);
 app.use('/api/contact', contactSubmissionRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/articles', articlesRouter);
+app.use('/api/home-menus', homeMenuRouter);
 
 // 微信小程序路由
 app.use('/wechat', wechatContactRouter);

@@ -4,24 +4,8 @@ const app = getApp();
 Page({
   data: {
     carouselImages: [],
-    submenus: [
-      {
-        title: "互惠美国",
-        icon: "/images/icon/car1.png"
-      },
-      {
-        title: "澳洲whv",
-        icon: "/images/icon/car2.png"
-      },
-      {
-        title: "美国营地",
-        icon: "/images/icon/car3.png"
-      },
-      {
-        title: "我要咨询",
-        icon: "/images/icon/car4.png"
-      }
-    ],
+    current: 0,
+    submenus: [],
     caseStudies: [],
     searchKeyword: ''
   },
@@ -29,6 +13,41 @@ Page({
   onLoad() {
     this.fetchCarouselImages();
     this.fetchCaseStudies();
+    this.fetchMenus();
+  },
+
+  // 获取首页菜单
+  fetchMenus() {
+    app.request('/home-menus')
+      .then(res => {
+        const menus = (res || []).map(item => ({
+          ...item,
+          icon: item.icon_url ? app.globalData.apiBaseUrl.replace('/api', '') + item.icon_url : '/images/icon/car1.png'
+        }));
+        this.setData({
+          submenus: menus
+        });
+      })
+      .catch(err => {
+        console.error('Failed to fetch menus:', err);
+      });
+  },
+
+  // 轮播图切换事件
+  onSwiperChange(e) {
+    this.setData({
+      current: e.detail.current
+    });
+  },
+
+  // 菜单点击事件
+  onMenuTap(e) {
+    const { id, content } = e.currentTarget.dataset;
+    if (content) {
+      wx.navigateTo({
+        url: `/pages/menu-detail/index?id=${id}`
+      });
+    }
   },
 
   // 获取轮播图片
@@ -96,6 +115,16 @@ Page({
     wx.navigateTo({
       url: `/pages/article-detail/index?id=${id}`
     });
+  },
+
+  // 轮播图点击事件
+  onCarouselTap(e) {
+    const { article_url: articleUrl } = e.currentTarget.dataset;
+    if (articleUrl) {
+      wx.navigateTo({
+        url: `/pages/webview/index?url=${encodeURIComponent(articleUrl)}`
+      });
+    }
   },
 
   // 导航到案例分享列表

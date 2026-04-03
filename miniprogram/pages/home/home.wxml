@@ -15,16 +15,23 @@
 
   <!-- 轮播图 -->
   <view class="carousel-container">
-    <swiper indicator-dots="true" autoplay="true" interval="5000" duration="1000">
-      <swiper-item wx:for="{{carouselImages}}" wx:key="id">
+    <swiper indicator-dots="{{false}}" autoplay="true" interval="5000" duration="1000" bindchange="onSwiperChange">
+      <swiper-item wx:for="{{carouselImages}}" wx:key="id" bindtap="onCarouselTap" data-article_url="{{item.article_url}}">
         <image src="{{item.image_url}}" class="carousel-image" />
+        <view class="carousel-overlay" wx:if="{{item.title}}">
+          <text class="carousel-title">{{item.title}}</text>
+        </view>
       </swiper-item>
     </swiper>
+    <!-- 自定义指示器 -->
+    <view class="carousel-indicator" wx:if="{{carouselImages.length > 0}}">
+      {{current + 1}}/{{carouselImages.length}}
+    </view>
   </view>
 
   <!-- 子菜单 -->
   <view class="submenu-container">
-    <view class="submenu-item" wx:for="{{submenus}}" wx:key="index">
+    <view class="submenu-item" wx:for="{{submenus}}" wx:key="id" bindtap="onMenuTap" data-id="{{item.id}}" data-content="{{item.content}}">
       <image src="{{item.icon}}" class="submenu-icon" />
       <text class="submenu-text">{{item.title}}</text>
     </view>

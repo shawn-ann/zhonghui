@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "菜单详情",
+  "navigationBarBackgroundColor": "#e81353",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "mp-html": "mp-html"
+  }
+}

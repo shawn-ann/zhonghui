@@ -6,18 +6,18 @@ class CarouselModel {
     return rows;
   }
 
-  static async create(imageUrl, title, orderNum) {
+  static async create(imageUrl, title, articleUrl, orderNum) {
     const [result] = await pool.execute(
-      'INSERT INTO carousel_images (image_url, title, order_num) VALUES (?, ?, ?)',
-      [imageUrl, title, orderNum]
+      'INSERT INTO carousel_images (image_url, title, article_url, order_num) VALUES (?, ?, ?, ?)',
+      [imageUrl, title, articleUrl, orderNum]
     );
     return result.insertId;
   }
 
-  static async update(id, imageUrl, title, orderNum) {
+  static async update(id, imageUrl, title, articleUrl, orderNum) {
     await pool.execute(
-      'UPDATE carousel_images SET image_url = ?, title = ?, order_num = ? WHERE id = ?',
-      [imageUrl, title, orderNum, id]
+      'UPDATE carousel_images SET image_url = ?, title = ?, article_url = ?, order_num = ? WHERE id = ?',
+      [imageUrl, title, articleUrl, orderNum, id]
     );
   }
 

@@ -5,6 +5,8 @@ import Carousel from './pages/Carousel'
 import CarouselForm from './pages/Carousel/Form'
 import Article from './pages/Article'
 import ArticleForm from './pages/Article/Form'
+import HomeMenu from './pages/HomeMenu'
+import HomeMenuForm from './pages/HomeMenu/Form'
 import Contact from './pages/Contact'
 
 function ProtectedRoute({ children }) {
@@ -31,6 +33,9 @@ function App() {
         <Route path="article" element={<Article />} />
         <Route path="article/add" element={<ArticleForm key="article-add" />} />
         <Route path="article/edit/:id" element={<ArticleForm key="article-edit" />} />
+        <Route path="home-menu" element={<HomeMenu />} />
+        <Route path="home-menu/add" element={<HomeMenuForm key="home-menu-add" />} />
+        <Route path="home-menu/edit/:id" element={<HomeMenuForm key="home-menu-edit" />} />
         <Route path="contact" element={<Contact />} />
       </Route>
     </Routes>

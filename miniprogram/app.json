@@ -5,12 +5,14 @@
     "pages/contact/contact",
     "pages/case-study/index",
     "pages/article-detail/index",
-    "pages/search/search"
+    "pages/search/search",
+    "pages/webview/index",
+    "pages/menu-detail/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#e81353",
-    "navigationBarTitleText": "中慧互惠出国",
+    "navigationBarTitleText": "中惠文化",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {

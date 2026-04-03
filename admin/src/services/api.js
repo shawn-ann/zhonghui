@@ -38,6 +38,15 @@ export const adminApi = {
   changePassword: (data) => api.put('/admin/password', data),
 }
 
+// 首页菜单 API
+export const homeMenuApi = {
+  getList: () => api.get('/home-menus'),
+  getById: (id) => api.get(`/home-menus/${id}`),
+  create: (data) => api.post('/home-menus', data),
+  update: (id, data) => api.put(`/home-menus/${id}`, data),
+  delete: (id) => api.delete(`/home-menus/${id}`),
+}
+
 // 文件上传
 export const uploadApi = {
   upload: (file) => {

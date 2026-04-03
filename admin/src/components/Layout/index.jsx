@@ -4,6 +4,7 @@ import { adminApi } from '../../services/api'
 
 const navItems = [
   { path: '/carousel', label: '轮播图片管理' },
+  { path: '/home-menu', label: '首页菜单管理' },
   { path: '/article', label: '文章管理' },
   { path: '/contact', label: '联系表单管理' },
 ]
