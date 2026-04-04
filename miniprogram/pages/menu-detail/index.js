@@ -14,7 +14,6 @@ Page({
   loadMenuDetail: function (id) {
     const app = getApp();
     
-    // 使用微信小程序专用 API（返回 HTML 格式内容）
     app.wechatRequest(`/home-menus/${id}`)
       .then(res => {
         this.setData({
@@ -22,7 +21,6 @@ Page({
           loading: false
         });
 
-        // 设置页面标题
         wx.setNavigationBarTitle({
           title: res.title || '菜单详情'
         });

@@ -4,4 +4,7 @@
     <text class="loading-text">加载中...</text>
   </view>
   <mp-html wx:else content="{{menu.content}}" img-mode="aspectFit"></mp-html>
+  
+  <!-- 底部导航栏 -->
+  <bottom-nav current="" />
 </view>

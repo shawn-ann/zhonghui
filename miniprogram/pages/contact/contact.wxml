@@ -99,4 +99,7 @@
       <button form-type="submit" class="submit-button" loading="{{loading}}">{{loading ? '提交中...' : '提交'}}</button>
     </view>
   </form>
+
+  <!-- 底部导航栏 -->
+  <bottom-nav current="contact" />
 </view>

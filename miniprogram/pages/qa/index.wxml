@@ -27,4 +27,7 @@
   <view wx:if="{{!loading && !hasMore}}" class="no-more-container">
     <text class="no-more-text">没有更多数据了</text>
   </view>
+
+  <!-- 底部导航栏 -->
+  <bottom-nav current="qa" />
 </view>

@@ -1,6 +1,7 @@
 .container {
   background-color: #ffffff;
   min-height: 100vh;
+  padding-bottom: 160rpx;
 }
 
 .loading-container {
@@ -18,13 +19,4 @@ mp-html image {
   display: block;
   margin-bottom: 0 !important;
   margin-top: 0 !important;
-}
-
-/* 去掉段落之间的空行 */
-mp-html p {
-  margin-bottom: 0;
-}
-
-mp-html p:empty {
-  display: none;
 }

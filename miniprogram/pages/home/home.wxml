@@ -60,4 +60,7 @@
       <button class="load-more-button" bindtap="navigateToCaseStudyList">加载更多</button>
     </view>
   </view>
+
+  <!-- 底部导航栏 -->
+  <bottom-nav current="home" />
 </view>

@@ -1,0 +1,14 @@
+<view class="bottom-tabbar">
+  <view class="tab-item {{current === 'home' ? 'active' : ''}}" bindtap="onTabTap" data-page="home">
+    <image src="/images/icon/shouye-zhihui.png" class="tab-icon" />
+    <text class="tab-text">首页</text>
+  </view>
+  <view class="tab-item {{current === 'qa' ? 'active' : ''}}" bindtap="onTabTap" data-page="qa">
+    <image src="/images/icon/wenda.png" class="tab-icon" />
+    <text class="tab-text">常见Q&A</text>
+  </view>
+  <view class="tab-item {{current === 'contact' ? 'active' : ''}}" bindtap="onTabTap" data-page="contact">
+    <image src="/images/icon/qianshuxieyi.png" class="tab-icon" />
+    <text class="tab-text">联系我们</text>
+  </view>
+</view>

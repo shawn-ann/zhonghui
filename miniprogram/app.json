@@ -15,31 +15,8 @@
     "navigationBarTitleText": "中惠文化",
     "navigationBarTextStyle": "white"
   },
-  "tabBar": {
-    "color": "#757575",
-    "selectedColor": "#e81353",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
-    "list": [
-      {
-        "pagePath": "pages/home/home",
-        "text": "首页",
-        "iconPath": "images/icon/shouye-zhihui.png",
-        "selectedIconPath": "images/icon/shouye-zhihui.png"
-      },
-      {
-        "pagePath": "pages/qa/index",
-        "text": "常见Q&A",
-        "iconPath": "images/icon/wenda.png",
-        "selectedIconPath": "images/icon/wenda.png"
-      },
-      {
-        "pagePath": "pages/contact/contact",
-        "text": "联系我们",
-        "iconPath": "images/icon/qianshuxieyi.png",
-        "selectedIconPath": "images/icon/qianshuxieyi.png"
-      }
-    ]
+  "usingComponents": {
+    "bottom-nav": "/components/bottom-nav/index"
   },
   "sitemapLocation": "sitemap.json"
 }
